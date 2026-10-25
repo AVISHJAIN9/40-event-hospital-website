@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Sharma - Appointment Booking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- CSS VARIABLES --- */
+        :root {
+            --primary: #2563eb;      /* Medical Blue */
+            --primary-dark: #1e40af;
+            --success: #10b981;      /* Green for success/money */
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --booked: #cbd5e1;       /* Gray for disabled slots */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr; /* Mobile default */
+        }
+
+        /* Desktop Layout */
+        @media(min-width: 768px) {
+            .container {
+                grid-template-columns: 350px 1fr; /* Sidebar | Main Content */
+                min-height: 600px;
+            }
+        }
+
+        /* --- LEFT SIDEBAR (Doctor Info) --- */
+        .sidebar {
+            background: #eff6ff;
+            padding: 30px;
+            border-right: 1px solid var(--border);
+            text-align: center; /* Center content in sidebar */
+        }
+
+        /* Doctor Image Style */
+        .doctor-img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            border: 4px solid #ffffff;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+        }
+
+        .doctor-badge {
+            display: inline-block;
+            background: #dbeafe;
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .sidebar h1 { font-size: 1.5rem; margin: 0 0 10px 0; color: var(--primary-dark); }
+        .sidebar p { color: var(--text-light); line-height: 1.6; font-size: 0.9rem; }
+        
+        .price-tag {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+        .price-tag span { color: var(--success); display: block; font-size: 1.5rem; margin-top: 5px;}
+
+        /* --- RIGHT SIDE (Booking Flow) --- */
+        .main-content {
+            padding: 30px;
+        }
+
+        h2 { margin-top: 0; font-size: 1.2rem; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 20px; }
+
+        /* Calendar Styles */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .month-name { font-weight: 700; font-size: 1.1rem; }
+        .nav-btn {
+            background: none;
+            border: 1px solid var(--border);
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .nav-btn:hover { background: #f1f5f9; }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            text-align: center;
+        }
+
+        .day-name {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            padding-bottom: 5px;
+        }
+
+        .day-btn {
+            padding: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            font-size: 0.9rem;
+        }
+        .day-btn:hover { background-color: #e0f2fe; color: var(--primary); }
+        
+        .day-btn.selected {
+            background-color: var(--primary);
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+        }
+        
+        .day-btn.empty { cursor: default; background: none; }
+        .day-btn.empty:hover { background: none; }
+
+        /* Time Slot Grid */
+        .slots-area {
+            margin-top: 30px;
+            display: none; /* Hidden until date selected */
+            animation: fadeIn 0.5s ease;
+        }
+
+        .slots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 10px;
+        }
+
+        .time-btn {
+            padding: 10px;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .time-btn:hover { border-color: var(--primary); color: var(--primary); }
+        
+        .time-btn.selected {
+            background-color: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .time-btn.booked {
+            background-color: #f1f5f9;
+            color: #cbd5e1;
+            text-decoration: line-through;
+            cursor: not-allowed;
+            border-color: #e2e8f0;
+        }
+
+        /* Payment Section */
+        .payment-area {
+            margin-top: 30px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            padding: 20px;
+            border-radius: 12px;
+            display: none; /* Hidden until slot selected */
+            animation: slideUp 0.4s ease;
+        }
+
+        .payment-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .pay-btn {
+            width: 100%;
+            background-color: var(--text-main);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .pay-btn:hover { background-color: black; }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80" alt="Dr. Amit Sharma" class="doctor-img">
+        
+        <div>
+            <span class="doctor-badge">Cardiologist</span>
+        </div>
+        <h1>Dr. Amit Sharma</h1>
+        <p>MD, DM (Cardiology) - AIIMS<br>15+ Years Experience</p>
+        <p>Specializes in heart health, blood pressure management, and preventive cardiology.</p>
+        
+        <div class="price-tag">
+            Consultation Fee:
+            <span>₹ 1200</span>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        
+        <!-- Step 1: Calendar -->
+        <div id="calendar-section">
+            <h2>1. Select a Date</h2>
+            
+            <div class="calendar-header">
+                <button class="nav-btn" onclick="changeMonth(-1)">&lt;</button>
+                <span class="month-name" id="currentMonthDisplay">November 2025</span>
+                <button class="nav-btn" onclick="changeMonth(1)">&gt;</button>
+            </div>
+
+            <div class="calendar-grid" id="calendarGrid">
+                <!-- Generated via JS -->
+            </div>
+        </div>
+
+        <!-- Step 2: Time Slots -->
+        <div id="slots-section" class="slots-area">
+            <h2>2. Select Time Slot <span id="selectedDateDisplay" style="font-weight:400; font-size: 0.9rem; color: var(--primary);"></span></h2>
+            <div class="slots-grid" id="slotsGrid">
+                <!-- Generated via JS -->
+            </div>
+        </div>
+
+        <!-- Step 3: Payment -->
+        <div id="payment-section" class="payment-area">
+            <h2>3. Confirm & Pay</h2>
+            <div class="payment-details">
+                <div>
+                    <strong>Appointment Time:</strong><br>
+                    <span id="finalTimeDisplay" style="color: var(--text-light);">--:--</span>
+                </div>
+                <div style="text-align: right;">
+                    <strong>Total:</strong><br>
+                    <span style="color: var(--success); font-weight: bold;">₹ 1200</span>
+                </div>
+            </div>
+            <button class="pay-btn" onclick="processPayment()">Pay ₹1200 & Book Appointment</button>
+        </div>
+
+    </main>
+</div>
+
+<script>
+    // --- 1. DATA & VARIABLES ---
+    
+    const currentDate = new Date();
+    let displayedDate = new Date(); // Used for calendar navigation
+    let selectedDate = null;        // The date user clicked
+    let selectedSlot = null;        // The time slot user clicked
+
+    // Default Mock Data (Will reset on page refresh)
+    const bookedDatabase = {
+        "2025-11-22": ["10:30 AM - 11:00 AM", "02:00 PM - 02:30 PM"],
+        "2025-11-24": ["09:00 AM - 09:30 AM"]
+    };
+
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+    // --- 2. CALENDAR LOGIC ---
+
+    function renderCalendar() {
+        const grid = document.getElementById('calendarGrid');
+        const monthDisplay = document.getElementById('currentMonthDisplay');
+        
+        grid.innerHTML = `
+            <div class="day-name">Sun</div><div class="day-name">Mon</div>
+            <div class="day-name">Tue</div><div class="day-name">Wed</div>
+            <div class="day-name">Thu</div><div class="day-name">Fri</div>
+            <div class="day-name">Sat</div>
+        `;
+
+        const year = displayedDate.getFullYear();
+        const month = displayedDate.getMonth(); // 0-11
+
+        monthDisplay.textContent = `${monthNames[month]} ${year}`;
+
+        // First day of the month (0=Sun, 1=Mon...)
+        const firstDay = new Date(year, month, 1).getDay();
+        // Total days in month
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        // Empty slots for previous month
+        for (let i = 0; i < firstDay; i++) {
+            const emptyDiv = document.createElement('div');
+            emptyDiv.classList.add('day-btn', 'empty');
+            grid.appendChild(emptyDiv);
+        }
+
+        // Actual Days
+        for (let day = 1; day <= daysInMonth; day++) {
+            const btn = document.createElement('div');
+            btn.classList.add('day-btn');
+            btn.textContent = day;
+            
+            // Create key for comparison "YYYY-MM-DD"
+            const dateKey = `${year}-${String(month+1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+            // Highlight if previously selected
+            if (selectedDate === dateKey) {
+                btn.classList.add('selected');
+            }
+
+            btn.onclick = () => selectDate(dateKey, btn);
+            grid.appendChild(btn);
+        }
+    }
+
+    function changeMonth(offset) {
+        displayedDate.setMonth(displayedDate.getMonth() + offset);
+        renderCalendar();
+    }
+
+    function selectDate(dateKey, btnElement) {
+        // Visual update
+        document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('selected'));
+        btnElement.classList.add('selected');
+
+        selectedDate = dateKey;
+        selectedSlot = null; // Reset slot selection
+        
+        // UI Updates
+        document.getElementById('slots-section').style.display = 'block';
+        document.getElementById('payment-section').style.display = 'none';
+        document.getElementById('selectedDateDisplay').textContent = `on ${dateKey}`;
+
+        generateTimeSlots(dateKey);
+    }
+
+    // --- 3. TIME SLOT LOGIC ---
+
+    function generateTimeSlots(dateKey) {
+        const slotsGrid = document.getElementById('slotsGrid');
+        slotsGrid.innerHTML = '';
+
+        // Define start hours (e.g., 9 AM to 5 PM)
+        const startHour = 9; 
+        const endHour = 17; 
+
+        // Get booked slots for this date from "database"
+        const bookedForDay = bookedDatabase[dateKey] || [];
+
+        for (let hour = startHour; hour < endHour; hour++) {
+            // Create two 30-min slots per hour
+            createSlotBtn(hour, 0, bookedForDay);  // e.g., 9:00
+            createSlotBtn(hour, 30, bookedForDay); // e.g., 9:30
+        }
+    }
+
+    function createSlotBtn(hour, minutes, bookedForDay) {
+        // Format Start Time
+        const startPeriod = hour >= 12 ? 'PM' : 'AM';
+        const displayHour = hour > 12 ? hour - 12 : hour;
+        const startStr = `${String(displayHour).padStart(2, '0')}:${String(minutes).padStart(2, '0')} ${startPeriod}`;
+
+        // Calculate End Time (30 mins later)
+        let endH = hour;
+        let endM = minutes + 30;
+        if (endM >= 60) {
+            endH++;
+            endM = 0;
+        }
+        const endPeriod = endH >= 12 ? 'PM' : 'AM';
+        const displayEndH = endH > 12 ? endH - 12 : endH;
+        const endStr = `${String(displayEndH).padStart(2, '0')}:${String(endM).padStart(2, '0')} ${endPeriod}`;
+
+        const timeRange = `${startStr} - ${endStr}`;
+
+        const btn = document.createElement('button');
+        btn.classList.add('time-btn');
+        btn.textContent = timeRange;
+
+        // Check if booked
+        if (bookedForDay.includes(timeRange)) {
+            btn.classList.add('booked');
+            btn.disabled = true;
+            btn.title = "Already Booked";
+        } else {
+            btn.onclick = () => selectSlot(timeRange, btn);
+        }
+
+        document.getElementById('slotsGrid').appendChild(btn);
+    }
+
+    function selectSlot(timeRange, btnElement) {
+        // Visual Update
+        document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
+        btnElement.classList.add('selected');
+
+        selectedSlot = timeRange;
+
+        // UI Updates
+        const paySection = document.getElementById('payment-section');
+        paySection.style.display = 'block';
+        
+        // Update Summary
+        document.getElementById('finalTimeDisplay').textContent = `${selectedDate} | ${selectedSlot}`;
+        
+        // Auto scroll to payment
+        paySection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // --- 4. PAYMENT LOGIC ---
+
+    function processPayment() {
+        const btn = document.querySelector('.pay-btn');
+        
+        // 1. Simulate Loading
+        btn.textContent = "Processing Payment...";
+        btn.disabled = true;
+        btn.style.backgroundColor = "#334155";
+
+        setTimeout(() => {
+            // 2. Success Action
+            alert(`✅ Success!\n\nAppointment Confirmed for:\n${selectedDate}\n${selectedSlot}\n\nAmount Paid: ₹1200`);
+            
+            // 3. "Save" to database (in-memory only)
+            if (!bookedDatabase[selectedDate]) {
+                bookedDatabase[selectedDate] = [];
+            }
+            bookedDatabase[selectedDate].push(selectedSlot);
+            // Note: No localStorage.setItem here, so data is lost on refresh
+
+            // 4. Reset UI
+            btn.textContent = "Pay ₹1200 & Book Appointment";
+            btn.disabled = false;
+            btn.style.backgroundColor = "";
+            
+            // Refresh slots to show it as booked immediately
+            generateTimeSlots(selectedDate);
+            document.getElementById('payment-section').style.display = 'none';
+
+        }, 2000); // 2 second delay
+    }
+
+    // Init
+    renderCalendar();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sachidaanand Health - Mental Reset</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* --- 1. BRAND VARIABLES --- */
+        :root {
+            --brand-blue: #036af9;
+            --brand-cyan: #06b6d4;
+            --brand-dark: #0f172a;
+            --text-light: #f8fafc;
+            
+            --glass-bg: rgba(15, 23, 42, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            
+            --game-board-bg: rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--brand-dark);
+        }
+
+        /* --- 2. VIDEO BACKGROUND --- */
+        .video-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            filter: brightness(0.5) hue-rotate(190deg); 
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(3, 106, 249, 0.2), rgba(6, 182, 212, 0.1));
+            backdrop-filter: blur(8px);
+            z-index: 1;
+        }
+
+        /* --- 3. MAIN CONTAINER --- */
+        .app-wrapper {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 700px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        /* --- 4. TABS --- */
+        .nav-tabs {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            padding: 8px;
+            border-radius: 50px;
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            box-shadow: var(--glass-shadow);
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.6);
+            padding: 12px 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 40px;
+            transition: 0.3s;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover { color: white; }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--brand-blue), var(--brand-cyan));
+            color: white;
+            box-shadow: 0 5px 15px rgba(3, 106, 249, 0.4);
+        }
+
+        /* --- 5. CONTENT SECTIONS --- */
+        .content-card {
+            width: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: var(--glass-shadow);
+            display: none;
+            text-align: center;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .content-card.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        h2 {
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .instruction {
+            color: rgba(255,255,255,0.7);
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        /* --- 6. BREATHING PACER UI --- */
+        .breathing-container {
+            height: 350px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .breathing-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--brand-blue), var(--brand-cyan));
+            box-shadow: 0 0 60px var(--brand-blue);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            transform: scale(1);
+            opacity: 0.8;
+            /* Animation handled by JS class now */
+        }
+
+        .breathing-circle.running {
+            animation: breathe 8s infinite ease-in-out;
+        }
+
+        /* Visual Rings */
+        .breathing-circle::before {
+            content: '';
+            position: absolute;
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.3);
+            transform: scale(1.2);
+        }
+        
+        .breathing-circle.running::before {
+            animation: pulseRing 8s infinite ease-in-out;
+        }
+
+        .breath-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 2;
+            margin-bottom: 20px;
+        }
+
+        /* Start Button for Breathe */
+        .start-btn {
+            margin-top: 250px; /* Push below circle */
+            background: white;
+            color: var(--brand-dark);
+            border: none;
+            padding: 12px 30px;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .start-btn:hover { background: var(--brand-cyan); color: white; }
+        .start-btn.hidden { display: none; }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 30px var(--brand-blue); }
+            40% { transform: scale(3); opacity: 1; box-shadow: 0 0 80px var(--brand-cyan); } /* Inhale */
+            50% { transform: scale(3); opacity: 1; box-shadow: 0 0 80px var(--brand-cyan); } /* Hold */
+            90% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 30px var(--brand-blue); } /* Exhale */
+        }
+
+        @keyframes pulseRing {
+            0%, 100% { transform: scale(1.2); opacity: 0.5; }
+            40%, 50% { transform: scale(1.1); opacity: 0.8; }
+            90% { transform: scale(1.2); opacity: 0.5; }
+        }
+
+
+        /* --- 7. GROUNDING GAME UI --- */
+        #target-instruction {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 15px 0;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            display: inline-block;
+            transition: color 0.3s;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .game-board {
+            height: 350px;
+            width: 100%;
+            background: var(--game-board-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden; /* Crucial */
+            cursor: crosshair;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+        }
+
+        .shape {
+            position: absolute;
+            transition: transform 0.2s, opacity 0.2s;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .shape:hover { filter: brightness(1.2); transform: scale(1.1); z-index: 10; }
+        .shape:active { transform: scale(0.9); }
+
+        /* Shapes */
+        .circle { border-radius: 50%; }
+        .square { border-radius: 8px; }
+        .triangle {
+            width: 0; height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-bottom: 50px solid;
+            background: transparent !important;
+            box-shadow: none; 
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+        }
+
+        .score-board {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+        .score-board span { color: var(--brand-cyan); font-weight: 800; font-size: 1.5rem; }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .app-wrapper { width: 95%; }
+            .content-card { padding: 20px; }
+            .breathing-container { height: 300px; }
+            .game-board { height: 300px; }
+        }
+    </style>
+</head>
+<body>
+
+    <video class="video-bg" autoplay muted loop playsinline>
+        <source src="https://player.vimeo.com/external/484260975.sd.mp4?s=5e769345452325a4752640225235c6c013721d16&profile_id=164&oauth2_token_id=57447761" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+
+    <div class="app-wrapper">
+        
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('breathe')">
+                <i class="fas fa-lungs"></i> Breathe
+            </button>
+            <button class="tab-btn" onclick="switchTab('ground')">
+                <i class="fas fa-puzzle-piece"></i> Grounding
+            </button>
+        </div>
+
+        <div id="breathe-section" class="content-card active" data-tilt data-tilt-max="5" data-tilt-glare data-tilt-max-glare="0.2">
+            <h2>Rhythm Reset</h2>
+            <p class="instruction">Sync your breath with the glowing orb to lower your heart rate.</p>
+            
+            <div class="breathing-container">
+                <div class="breath-text" id="breath-label">Ready?</div>
+                <div class="breathing-circle" id="breathCircle"></div>
+                <button class="start-btn" id="startBreathBtn" onclick="toggleBreathing()">Start Session</button>
+            </div>
+        </div>
+
+        <div id="ground-section" class="content-card" data-tilt data-tilt-max="5" data-tilt-glare data-tilt-max-glare="0.2">
+            <h2>Focus Reset</h2>
+            <p class="instruction">Engage your senses. Find and click the specific shapes.</p>
+            
+            <div id="target-instruction">Find: ...</div>
+            
+            <div class="game-board" id="game-board">
+                </div>
+
+            <div class="score-board">
+                Focus Score: <span id="score">0</span> / 3
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+
+    <script>
+        // Init Tilt
+        VanillaTilt.init(document.querySelectorAll(".content-card"), {
+            max: 5,
+            speed: 400,
+            glare: true,
+            "max-glare": 0.1,
+        });
+
+        /* --- LOGIC 1: TAB SWITCHING --- */
+        function switchTab(tabName) {
+            document.querySelectorAll('.content-card').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+            if(tabName === 'breathe') {
+                document.getElementById('breathe-section').classList.add('active');
+                document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
+            } else {
+                document.getElementById('ground-section').classList.add('active');
+                document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
+                resetGame();
+            }
+        }
+
+        /* --- LOGIC 2: BREATHING PACER (With Start Button) --- */
+        const textLabel = document.getElementById('breath-label');
+        const breathCircle = document.getElementById('breathCircle');
+        const startBtn = document.getElementById('startBreathBtn');
+        let breathInterval;
+        let isBreathing = false;
+
+        function toggleBreathing() {
+            if (!isBreathing) {
+                // Start
+                isBreathing = true;
+                breathCircle.classList.add('running');
+                startBtn.innerText = "Stop Session";
+                startBtn.style.background = "#ef4444"; // Red for stop
+                startBtn.style.color = "white";
+                runBreathLoop();
+                breathInterval = setInterval(runBreathLoop, 8000);
+            } else {
+                // Stop
+                isBreathing = false;
+                breathCircle.classList.remove('running');
+                startBtn.innerText = "Start Session";
+                startBtn.style.background = "white";
+                startBtn.style.color = "var(--brand-dark)";
+                clearInterval(breathInterval);
+                textLabel.innerText = "Ready?";
+            }
+        }
+
+        function runBreathLoop() {
+            setTimeout(() => { textLabel.innerText = "Breathe In"; }, 0);
+            setTimeout(() => { textLabel.innerText = "Hold"; }, 3200);
+            setTimeout(() => { textLabel.innerText = "Breathe Out"; }, 4000);
+            setTimeout(() => { textLabel.innerText = "Relax"; }, 7200);
+        }
+
+        /* --- LOGIC 3: GROUNDING GAME (FIXED & GLITCH FREE) --- */
+        const board = document.getElementById('game-board');
+        const instruction = document.getElementById('target-instruction');
+        const scoreEl = document.getElementById('score');
+        
+        const colors = ['#ef4444', '#10b981', '#036af9', '#f59e0b']; // Red, Green, Blue, Orange
+        const colorNames = ['Red', 'Green', 'Blue', 'Orange'];
+        const shapes = ['circle', 'square', 'triangle'];
+        
+        let currentTarget = {};
+        let currentScore = 0;
+        const MAX_TARGET = 3;
+        let placedShapes = []; // To track collisions
+
+        function resetGame() {
+            board.innerHTML = '';
+            currentScore = 0;
+            scoreEl.innerText = '0';
+            placedShapes = [];
+            
+            // 1. Define Target
+            const cIndex = Math.floor(Math.random() * colors.length);
+            const sIndex = Math.floor(Math.random() * shapes.length);
+            
+            currentTarget = {
+                color: colors[cIndex],
+                cName: colorNames[cIndex],
+                shape: shapes[sIndex],
+                cIndex: cIndex,
+                sIndex: sIndex
+            };
+
+            instruction.innerText = `Find: 3 ${currentTarget.cName} ${capitalize(currentTarget.shape)}s`;
+            instruction.style.color = currentTarget.color;
+            instruction.style.borderColor = currentTarget.color;
+
+            // 2. Spawn Exactly 3 Winning Shapes first
+            for(let i=0; i<3; i++) {
+                spawnShape(true);
+            }
+
+            // 3. Spawn 20 Distraction Shapes
+            for(let i=0; i<20; i++) {
+                spawnShape(false);
+            }
+        }
+
+        function spawnShape(isTarget) {
+            const el = document.createElement('div');
+            let color, shape, cIdx, sIdx;
+
+            if (isTarget) {
+                // Force target properties
+                color = currentTarget.color;
+                shape = currentTarget.shape;
+            } else {
+                // Random distraction (Logic to avoid accidental target generation could be added here, 
+                // but simpler is to just spawn random and if it matches, it counts as a win anyway)
+                cIdx = Math.floor(Math.random() * colors.length);
+                sIdx = Math.floor(Math.random() * shapes.length);
+                color = colors[cIdx];
+                shape = shapes[sIdx];
+            }
+            
+            el.classList.add('shape', shape);
+            
+            if (shape === 'triangle') {
+                el.style.borderBottomColor = color;
+            } else {
+                el.style.backgroundColor = color;
+            }
+
+            // Size
+            const size = 35 + Math.random() * 25; // 35px to 60px
+            if (shape !== 'triangle') {
+                el.style.width = size + 'px';
+                el.style.height = size + 'px';
+            }
+
+            // --- POSITIONING LOGIC (Collision Detection) ---
+            let safe = false;
+            let attempts = 0;
+            let x, y;
+
+            // Try 50 times to find a spot that doesn't overlap
+            while(!safe && attempts < 50) {
+                safe = true;
+                // Account for padding so it doesn't clip edge
+                x = Math.random() * (board.clientWidth - 70); 
+                y = Math.random() * (board.clientHeight - 70);
+
+                // Check distance against all other placed shapes
+                for(let p of placedShapes) {
+                    const dx = x - p.x;
+                    const dy = y - p.y;
+                    const distance = Math.sqrt(dx*dx + dy*dy);
+                    if (distance < 50) { // 50px buffer
+                        safe = false;
+                        break;
+                    }
+                }
+                attempts++;
+            }
+
+            if(safe) {
+                el.style.left = x + 'px';
+                el.style.top = y + 'px';
+                placedShapes.push({x, y}); // Register position
+
+                // Logic
+                el.onclick = () => {
+                    // Check match based on visual properties
+                    const clickedColor = shape === 'triangle' ? el.style.borderBottomColor : el.style.backgroundColor;
+                    // Note: colors need to match computed values usually, but here we use exact hex/rgb refs
+                    // Simpler check:
+                    let isMatch = false;
+                    
+                    // Use data attributes or logic variables to verify match
+                    // Re-verify logic:
+                    const isCorrectColor = (color === currentTarget.color);
+                    const isCorrectShape = (shape === currentTarget.shape);
+
+                    if (isCorrectColor && isCorrectShape) {
+                        currentScore++;
+                        scoreEl.innerText = currentScore;
+                        
+                        // Pop animation
+                        el.style.transform = 'scale(2)';
+                        el.style.opacity = '0';
+                        setTimeout(() => el.remove(), 200);
+                        
+                        if (currentScore >= MAX_TARGET) {
+                            instruction.innerText = "Excellent! Resetting...";
+                            instruction.style.color = 'white';
+                            setTimeout(resetGame, 1500);
+                        }
+                    } else {
+                        // Shake animation
+                        el.animate([
+                            { transform: 'translateX(0)' },
+                            { transform: 'translateX(-5px)' },
+                            { transform: 'translateX(5px)' },
+                            { transform: 'translateX(0)' }
+                        ], { duration: 200 });
+                    }
+                };
+
+                board.appendChild(el);
+            }
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+    </script>
+</body>
+</html>

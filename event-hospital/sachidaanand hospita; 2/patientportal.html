@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sachidaanand Clinical Dashboard</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- 1. PREMIUM CLINICAL THEME --- */
+        :root {
+            /* Brand Palette */
+            --primary: #0ea5e9;       /* Sky Blue - Trust & Calm */
+            --primary-dark: #0284c7;  /* Deep Blue - Action */
+            --accent: #6366f1;        /* Indigo - Highlights */
+            
+            /* Backgrounds */
+            --bg-main: #f8fafc;       /* Slate 50 */
+            --bg-panel: #ffffff;      /* Pure White */
+            --bg-subtle: #f1f5f9;     /* Slate 100 */
+            
+            /* Text */
+            --text-main: #0f172a;     /* Slate 900 */
+            --text-secondary: #64748b;/* Slate 500 */
+            
+            /* Borders & Shadows */
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            
+            --radius: 16px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* --- 2. SUBTLE BACKGROUND ANIMATION --- */
+        .bg-decoration {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: radial-gradient(circle at 10% 10%, rgba(14, 165, 233, 0.05), transparent 40%),
+                        radial-gradient(circle at 90% 90%, rgba(99, 102, 241, 0.05), transparent 40%);
+        }
+
+        /* --- 3. DASHBOARD LAYOUT --- */
+        .dashboard {
+            width: 95%; max-width: 1500px; height: 92vh;
+            background: var(--bg-panel);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            background: var(--bg-subtle);
+            border-right: 1px solid var(--border);
+            display: flex; flex-direction: column;
+            padding: 24px;
+            gap: 24px;
+        }
+
+        .brand {
+            display: flex; align-items: center; gap: 12px;
+            font-size: 1.25rem; font-weight: 700; color: var(--primary-dark);
+        }
+        .brand i { font-size: 1.5rem; color: var(--primary); }
+
+        .patient-profile {
+            text-align: center; padding: 20px;
+            background: var(--bg-panel); border-radius: var(--radius);
+            box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+        }
+        .avatar-ring {
+            width: 80px; height: 80px; margin: 0 auto 12px;
+            border-radius: 50%; padding: 3px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+        }
+        .avatar {
+            width: 100%; height: 100%; border-radius: 50%;
+            background: var(--bg-panel); display: flex; align-items: center; justify-content: center;
+            font-size: 1.75rem; font-weight: 600; color: var(--text-main);
+        }
+        .p-name { font-weight: 600; font-size: 1.1rem; margin-bottom: 4px; }
+        .p-id { font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; }
+
+        /* Navigation / Stats in Sidebar */
+        .stat-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+        }
+        .stat-card {
+            background: var(--bg-panel); padding: 12px; border-radius: 12px;
+            border: 1px solid var(--border); text-align: center;
+            transition: 0.2s;
+        }
+        .stat-card:hover { transform: translateY(-2px); border-color: var(--primary); }
+        .stat-label { font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; }
+        .stat-val { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-top: 4px; }
+        .stat-val.highlight { color: var(--primary); }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            display: grid; grid-template-rows: auto 1fr;
+            background: var(--bg-panel);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .top-bar {
+            padding: 20px 32px;
+            border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.8); backdrop-filter: blur(10px);
+        }
+        .page-title h2 { font-size: 1.5rem; font-weight: 700; color: var(--text-main); }
+        .page-title p { font-size: 0.9rem; color: var(--text-secondary); margin-top: 4px; }
+
+        .status-badge {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 16px; background: #ecfdf5; color: #059669;
+            border-radius: 20px; font-weight: 600; font-size: 0.9rem; border: 1px solid #d1fae5;
+        }
+        .pulse-dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 0 0 3px rgba(16,185,129,0.2); animation: pulse 2s infinite; }
+
+        /* Grid Content */
+        .content-scroll {
+            padding: 32px; overflow-y: auto;
+            display: grid; grid-template-columns: 2fr 1fr; gap: 24px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-panel); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 24px;
+            box-shadow: var(--shadow-sm); transition: 0.3s;
+            position: relative; overflow: hidden;
+        }
+        .card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        
+        .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .icon-box {
+            width: 40px; height: 40px; border-radius: 10px;
+            background: var(--bg-subtle); color: var(--primary);
+            display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+        }
+        .card-title { font-size: 1.1rem; font-weight: 600; color: var(--text-main); }
+
+        /* Diagnosis Style */
+        .diag-main { font-size: 1.25rem; font-weight: 600; color: var(--primary-dark); margin-bottom: 6px; }
+        .diag-sub { font-size: 0.95rem; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
+        .tag { padding: 4px 10px; background: var(--bg-subtle); border-radius: 6px; font-size: 0.8rem; font-weight: 500; color: var(--text-main); }
+
+        /* Timeline */
+        .timeline-container { position: relative; border-left: 2px solid var(--bg-subtle); margin-left: 10px; padding-left: 24px; }
+        .timeline-item { position: relative; margin-bottom: 24px; }
+        .timeline-item::before {
+            content: ''; position: absolute; left: -31px; top: 6px;
+            width: 12px; height: 12px; background: var(--bg-panel);
+            border: 2px solid var(--primary); border-radius: 50%;
+        }
+        .t-time { font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; margin-bottom: 4px; }
+        .t-content { font-size: 0.95rem; color: var(--text-main); line-height: 1.5; }
+
+        /* Medication List */
+        .med-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 0; border-bottom: 1px solid var(--bg-subtle);
+        }
+        .med-item:last-child { border-bottom: none; }
+        .med-name { font-weight: 600; font-size: 0.95rem; }
+        .med-dose { font-size: 0.85rem; color: var(--text-secondary); background: var(--bg-subtle); padding: 4px 8px; border-radius: 6px; }
+
+        /* Upload Area */
+        .upload-box {
+            border: 2px dashed var(--border); border-radius: 12px;
+            padding: 30px; text-align: center; cursor: pointer;
+            background: var(--bg-subtle); transition: 0.2s;
+        }
+        .upload-box:hover { border-color: var(--primary); background: #f0f9ff; }
+        .upload-icon { font-size: 2rem; color: var(--text-secondary); margin-bottom: 12px; }
+        .upload-label { font-size: 0.9rem; font-weight: 500; color: var(--text-main); }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); } 70% { box-shadow: 0 0 0 6px rgba(16,185,129,0); } 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); } }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .dashboard { grid-template-columns: 1fr; height: auto; overflow-y: auto; }
+            .sidebar { flex-direction: row; align-items: center; overflow-x: auto; border-right: none; border-bottom: 1px solid var(--border); }
+            .stat-grid { display: flex; gap: 16px; }
+            .stat-card { min-width: 100px; }
+            .content-scroll { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-decoration"></div>
+
+    <div class="dashboard">
+        
+        <aside class="sidebar">
+            <div class="brand">
+                <i class="fas fa-hospital-user"></i> Sachidaanand
+            </div>
+
+            <div class="patient-profile">
+                <div class="avatar-ring">
+                    <div class="avatar" id="pInitials">--</div>
+                </div>
+                <div class="p-name" id="pName">Loading...</div>
+                <div class="p-id" id="pId">ID: ...</div>
+            </div>
+
+            <div style="flex-grow: 1;">
+                <h4 style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:12px; font-weight:600; text-transform:uppercase;">Current Vitals</h4>
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <span class="stat-label">Heart Rate</span>
+                        <div class="stat-val highlight">72 bpm</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">BP</span>
+                        <div class="stat-val">120/80</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Temp</span>
+                        <div class="stat-val">98.6°F</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">SpO2</span>
+                        <div class="stat-val" style="color:#10b981">98%</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="main-content">
+            
+            <div class="top-bar">
+                <div class="page-title">
+                    <h2>Patient Overview</h2>
+                    <p>Room: <span id="pRoom" style="font-weight:600; color:var(--text-main);">--</span> &nbsp;|&nbsp; Admitted: <span id="pDate">--</span></p>
+                </div>
+                <div class="status-badge">
+                    <div class="pulse-dot"></div> Stable
+                </div>
+            </div>
+
+            <div class="content-scroll">
+                
+                <div style="display: flex; flex-direction: column; gap: 24px;">
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="icon-box"><i class="fas fa-stethoscope"></i></div>
+                            <div class="card-title">Primary Diagnosis</div>
+                        </div>
+                        <div class="diag-main" id="pDiagnosis">Loading...</div>
+                        <div class="diag-sub">
+                            <span class="tag">Status: Active</span>
+                            <span class="tag" id="pConsultant">Dr. ...</span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="icon-box"><i class="fas fa-history"></i></div>
+                            <div class="card-title">Clinical Timeline (24h)</div>
+                        </div>
+                        <div class="timeline-container" id="conditionTimeline">
+                            </div>
+                    </div>
+
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 24px;">
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="icon-box"><i class="fas fa-pills"></i></div>
+                            <div class="card-title">Medications</div>
+                        </div>
+                        <div id="medList">
+                            </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="icon-box"><i class="fas fa-file-medical"></i></div>
+                            <div class="card-title">Reports</div>
+                        </div>
+                        <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+                            <i class="fas fa-cloud-arrow-up upload-icon"></i>
+                            <div class="upload-label">Click to upload report</div>
+                            <input type="file" id="fileInput" hidden>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- MOCK DATA ---
+        const patientDatabase = {
+            "user123": {
+                id: 'SH-123', name: 'David Chen', age: '60', room: 'ICU-02', admitted: 'Nov 15, 2025',
+                diagnosis: 'Chronic Kidney Disease (Stage 4)', consultant: 'Dr. P. Varma',
+                meds: [
+                    { name: 'Sevelamer', dose: '800mg TID' },
+                    { name: 'Erythropoietin', dose: '4000 IU' }
+                ],
+                logs: [
+                    { time: '10:00 AM', text: 'Vitals checked. BP stable at 140/90. Patient responsive.' },
+                    { time: '08:00 AM', text: 'Dialysis session completed successfully. No adverse reactions.' }
+                ]
+            },
+            "user456": {
+                id: 'SH-456', name: 'Anjali Verma', age: '45', room: 'Ward-302', admitted: 'Nov 18, 2025',
+                diagnosis: 'Acute Myocardial Infarction', consultant: 'Dr. R. Sharma',
+                meds: [
+                    { name: 'Metoprolol', dose: '50mg BID' },
+                    { name: 'Heparin IV', dose: 'Continuous' }
+                ],
+                logs: [
+                    { time: '12:00 PM', text: 'SpO2 stable at 98% on room air. Patient resting comfortably.' },
+                    { time: '09:00 AM', text: 'Cardiac enzymes check performed. Results pending lab review.' }
+                ]
+            }
+        };
+
+        // Simulate Logic
+        const pid = 'user456'; // Current user
+        const data = patientDatabase[pid];
+
+        if(data) {
+            // Profile
+            document.getElementById('pName').textContent = data.name;
+            document.getElementById('pInitials').textContent = data.name.split(' ').map(n=>n[0]).join('');
+            document.getElementById('pId').textContent = `ID: ${data.id}`;
+            document.getElementById('pRoom').textContent = data.room;
+            document.getElementById('pDate').textContent = data.admitted;
+            
+            // Diagnosis
+            document.getElementById('pDiagnosis').textContent = data.diagnosis;
+            document.getElementById('pConsultant').textContent = data.consultant;
+
+            // Meds
+            const medList = document.getElementById('medList');
+            data.meds.forEach(m => {
+                medList.innerHTML += `
+                    <div class="med-item">
+                        <span class="med-name">${m.name}</span>
+                        <span class="med-dose">${m.dose}</span>
+                    </div>
+                `;
+            });
+
+            // Timeline
+            const timeline = document.getElementById('conditionTimeline');
+            data.logs.forEach(l => {
+                timeline.innerHTML += `
+                    <div class="timeline-item">
+                        <div class="t-time">${l.time}</div>
+                        <div class="t-content">${l.text}</div>
+                    </div>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>

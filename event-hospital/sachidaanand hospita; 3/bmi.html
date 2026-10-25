@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Calculator - Sachidaanand Health</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="bmi.css">
+     <script src="bmi.js"></script>
+
+    <style>
+        /* --- 1. BRAND VARIABLES --- */
+        :root {
+            --brand-blue: #036af9;
+            --brand-cyan: #06b6d4;
+            --brand-dark: #0f172a;
+            --text-light: #f8fafc;
+            
+            --glass-bg: rgba(15, 23, 42, 0.75); 
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            
+            /* BMI Colors */
+            --bmi-under: #3b82f6;
+            --bmi-normal: #10b981;
+            --bmi-over: #f59e0b;
+            --bmi-obese: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--brand-dark);
+        }
+
+        /* --- 2. VIDEO BACKGROUND --- */
+        .video-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            filter: brightness(0.6) hue-rotate(190deg) saturate(1.2); 
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(3, 106, 249, 0.3), rgba(6, 182, 212, 0.1));
+            backdrop-filter: blur(8px);
+            z-index: 1;
+        }
+
+        /* --- 3. MAIN CARD --- */
+        .calculator-card {
+            position: relative;
+            z-index: 10;
+            width: 450px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: var(--glass-shadow);
+            animation: fadeInUp 1s ease forwards;
+            text-align: center;
+            transform-style: preserve-3d;
+        }
+
+        h2 {
+            color: white;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        
+        p.subtitle {
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        /* --- 4. INPUT FIELDS --- */
+        .input-grid {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            position: relative;
+            flex: 1;
+        }
+
+        .input-group label {
+            display: block;
+            color: var(--brand-cyan);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-align: left;
+            margin-left: 5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 15px;
+            color: white;
+            font-size: 1.2rem;
+            text-align: center;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--brand-blue);
+            box-shadow: 0 0 15px rgba(3, 106, 249, 0.3);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        /* Unit Badge */
+        .unit {
+            position: absolute;
+            right: 15px;
+            bottom: 15px;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+            pointer-events: none;
+        }
+
+        /* --- 5. BUTTON --- */
+        .calc-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--brand-blue), var(--brand-cyan));
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(3, 106, 249, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .calc-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(6, 182, 212, 0.4);
+        }
+
+        /* --- 6. RESULTS DISPLAY --- */
+        .result-container {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            opacity: 0; /* Hidden initially */
+            transition: opacity 0.5s;
+            pointer-events: none; /* Prevent interaction when hidden */
+        }
+
+        .result-container.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .bmi-value {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 5px;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .bmi-category {
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+        }
+
+        /* Gauge Bar */
+        .gauge-wrapper {
+            position: relative;
+            width: 100%;
+            height: 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .gauge-bar {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            /* Gradient: Underweight -> Normal -> Overweight -> Obese */
+            background: linear-gradient(90deg, 
+                var(--bmi-under) 0%, 
+                var(--bmi-under) 18.5%, 
+                var(--bmi-normal) 18.5%, 
+                var(--bmi-normal) 25%, 
+                var(--bmi-over) 25%, 
+                var(--bmi-over) 30%, 
+                var(--bmi-obese) 30%, 
+                var(--bmi-obese) 100%
+            );
+        }
+
+        .gauge-pointer {
+            position: absolute;
+            top: -8px;
+            left: 0%; /* JS will move this */
+            width: 4px;
+            height: 28px;
+            background: white;
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.8);
+            transition: left 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mobile */
+        @media (max-width: 480px) {
+            .calculator-card { width: 95%; padding: 30px 20px; }
+            .input-grid { flex-direction: column; gap: 15px; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <video class="video-bg" autoplay muted loop playsinline>
+        <source src="https://player.vimeo.com/external/452134136.sd.mp4?s=7284986687c73631780845570c04804b00f8f723&profile_id=164&oauth2_token_id=57447761" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+
+    <div class="calculator-card" data-tilt data-tilt-max="5" data-tilt-glare data-tilt-max-glare="0.2">
+        
+        <h2>BMI Calculator</h2>
+        <p class="subtitle">Check your body mass index for a healthier life.</p>
+
+        <div class="input-grid">
+            <div class="input-group">
+                <label><i class="fas fa-weight"></i> Weight</label>
+                <input type="number" id="weight" placeholder="0" min="0">
+                <span class="unit">kg</span>
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-ruler-vertical"></i> Height</label>
+                <input type="number" id="height" placeholder="0.00" step="0.01" min="0">
+                <span class="unit">m</span>
+            </div>
+        </div>
+
+        <button class="calc-btn" onclick="calculateBMI()">
+            <i class="fas fa-calculator"></i> Calculate Now
+        </button>
+
+        <div id="resultBox" class="result-container">
+            <div class="bmi-value" id="bmiValue">0.0</div>
+            <div class="bmi-category" id="bmiCategory">Wait...</div>
+            
+            <div class="gauge-wrapper">
+                <div class="gauge-bar"></div>
+                <div class="gauge-pointer" id="pointer"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+    
+    <script>
+        VanillaTilt.init(document.querySelector(".calculator-card"), {
+            max: 5,
+            speed: 400,
+            glare: true,
+            "max-glare": 0.1,
+        });
+
+        function calculateBMI() {
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const resultBox = document.getElementById('resultBox');
+            const valText = document.getElementById('bmiValue');
+            const catText = document.getElementById('bmiCategory');
+            const pointer = document.getElementById('pointer');
+
+            // Validation
+            if (!weight || !height || height <= 0) {
+                alert("Please enter valid positive numbers.");
+                return;
+            }
+
+            // Calculation
+            const bmi = weight / (height * height);
+            const roundedBMI = bmi.toFixed(1);
+
+            // Determine Category & Color
+            let category = "";
+            let color = "";
+            
+            if (bmi < 18.5) {
+                category = "Underweight";
+                color = "var(--bmi-under)";
+            } else if (bmi >= 18.5 && bmi < 24.9) {
+                category = "Normal Weight";
+                color = "var(--bmi-normal)";
+            } else if (bmi >= 25 && bmi < 29.9) {
+                category = "Overweight";
+                color = "var(--bmi-over)";
+            } else {
+                category = "Obese";
+                color = "var(--bmi-obese)";
+            }
+
+            // Update UI
+            valText.innerText = roundedBMI;
+            catText.innerText = category;
+            catText.style.color = color;
+
+            // Show Result Section
+            resultBox.classList.add('show');
+
+            // Move Pointer Logic
+            // We map BMI 10 to 40 across 0% to 100% of the bar for visual representation
+            // Formula: (Current - Min) * 100 / (Max - Min)
+            let percentage = (bmi - 10) * 100 / (40 - 10);
+            
+            // Clamp between 0 and 100
+            if (percentage < 0) percentage = 0;
+            if (percentage > 100) percentage = 100;
+
+            pointer.style.left = `${percentage}%`;
+            pointer.style.backgroundColor = color; // Make pointer match status
+        }
+    </script>
+
+</body>
+</html>

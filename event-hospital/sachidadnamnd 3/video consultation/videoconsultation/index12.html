@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jitsi Video Consultation (Free Option)</title>
+    <link rel="stylesheet" href="script12.js">
+    <link rel="stylesheet" href="testimonials.css">
+    
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+        }
+
+        #meet-container {
+            width: 90%;
+            /* 75vh makes the container fill a large part of the screen */
+            height: 75vh; 
+            margin: 20px auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p.note {
+            color: #555;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Video Consultation Room</h1>
+    <p class="note">
+        This room is powered by Jitsi Meet. The video will appear below.
+    </p>
+
+    <div id="meet-container"></div>
+
+    <script src='https://meet.jit.si/external_api.js'></script>
+    
+    <script>
+        // --- Configuration ---
+        const DOMAIN = 'meet.jit.si';
+        
+        // **CRITICAL:** Use a UNIQUE room name for each consultation.
+        // In a real system, you would generate a unique ID from your MongoDB database 
+        // and append it here (e.g., 'consultation-appt-12345').
+        const ROOM_NAME = 'MySecureConsultationRoom_A1B2C3D4'; 
+        
+        // This name will show up for the user. In a real system, you'd fetch the user's name.
+        const USER_DISPLAY_NAME = 'Client Name'; 
+
+        // Options object defining how the video should be embedded
+        const options = {
+            roomName: ROOM_NAME,
+            width: '100%',
+            height: '100%',
+            // Target the HTML element with the ID 'meet-container'
+            parentNode: document.querySelector('#meet-container'), 
+            userInfo: {
+                displayName: USER_DISPLAY_NAME
+            },
+            // Overrides to customize the look and function of the video interface
+            interfaceConfigOverwrite: {
+                // Hides the "Invite Someone" button
+                HIDE_INVITE_MORE_HEADER: true, 
+                // Controls which buttons are visible at the bottom of the screen
+                TOOLBAR_BUTTONS: [
+                    'microphone', 'camera', 'desktop', 'fullscreen',
+                    'fodeviceselection', 'hangup', 'chat'
+                ]
+            },
+            // Overrides for internal meeting settings
+            configOverwrite: {
+                // Starts the call with the user's video turned off (on mobile)
+                startWithVideoMuted: true, 
+                // Starts the call with the user's audio turned off
+                startWithAudioMuted: false, 
+                // Skip the pre-join lobby page
+                prejoinPageEnabled: false
+            }
+        };
+
+        // --- Initialization ---
+        try {
+            // Instantiate the Jitsi Meet API to embed the conference
+            const api = new JitsiMeetExternalAPI(DOMAIN, options);
+
+            // Optional: Listen for events (good for linking to your business logic)
+            api.addEventListener('videoConferenceJoined', (response) => {
+                console.log(`User ${response.displayName} successfully joined the room: ${response.roomName}`);
+            });
+            
+            api.addEventListener('readyToClose', () => {
+                console.log("Conference is closing. You can redirect the user now.");
+                // Example: window.location.href = '/thank-you-page'; 
+            });
+
+        } catch (error) {
+            console.error("Failed to load Jitsi API:", error);
+            document.querySelector('#meet-container').innerHTML = "<p>Video service failed to load. Please check your network or try again later.</p>";
+        }
+    </script>
+</body>
+</html>

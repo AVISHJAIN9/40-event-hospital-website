@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Encyclopedia - Sachidaanand Health</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* --- 1. BRAND VARIABLES --- */
+        :root {
+            --brand-blue: #036af9;
+            --brand-cyan: #06b6d4;
+            --brand-dark: #0f172a;
+            --text-muted: #475569;
+            --text-light: #f8fafc;
+            
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            
+            --active-item-bg: linear-gradient(135deg, #036af9, #06b6d4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            height: 100vh;
+            overflow: hidden; /* Prevent body scroll, we scroll inside cards */
+            background-color: var(--brand-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- 2. VIDEO BACKGROUND --- */
+        .video-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            filter: brightness(0.6) hue-rotate(190deg) saturate(1.2); 
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(3, 106, 249, 0.15), rgba(6, 182, 212, 0.1));
+            backdrop-filter: blur(10px);
+            z-index: 1;
+        }
+
+        /* --- 3. MAIN DASHBOARD CONTAINER --- */
+        .dashboard-container {
+            position: relative;
+            z-index: 10;
+            width: 95%;
+            max-width: 1400px;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Header */
+        .header-bar {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--glass-shadow);
+            animation: slideDown 0.8s ease forwards;
+        }
+
+        .brand-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--brand-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .brand-title i { color: var(--brand-blue); }
+        
+        .disclaimer {
+            font-size: 0.85rem;
+            color: #ef4444;
+            font-weight: 600;
+            background: rgba(239, 68, 68, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+            flex-grow: 1;
+            overflow: hidden; /* Keep scroll inside panels */
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        /* --- 4. LEFT PANEL: LIST & SEARCH --- */
+        .list-panel {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: var(--glass-shadow);
+        }
+
+        .search-area {
+            padding: 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            background: rgba(255,255,255,0.5);
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: 1px solid rgba(255,255,255,0.8);
+            background: white;
+            border-radius: 15px;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .search-box input:focus {
+            border-color: var(--brand-blue);
+            box-shadow: 0 0 15px rgba(3, 106, 249, 0.2);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--brand-blue);
+        }
+
+        .disease-list-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .disease-item {
+            padding: 12px 20px;
+            margin-bottom: 8px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--brand-dark);
+            border-left: 4px solid transparent;
+        }
+
+        .disease-item:hover {
+            background: white;
+            transform: translateX(5px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .disease-item.active {
+            background: var(--active-item-bg);
+            color: white;
+            box-shadow: 0 5px 15px rgba(3, 106, 249, 0.3);
+            border-left: 4px solid white;
+        }
+
+        /* --- 5. RIGHT PANEL: DETAILS --- */
+        .details-panel {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: var(--glass-shadow);
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* Empty State */
+        .empty-state {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            text-align: center;
+        }
+        .empty-state i { font-size: 4rem; margin-bottom: 20px; color: var(--brand-blue); opacity: 0.5; }
+
+        /* Content Styling */
+        .details-content { display: none; animation: fadeIn 0.5s ease; }
+        .details-content.active { display: block; }
+
+        .disease-header {
+            border-bottom: 2px solid rgba(3, 106, 249, 0.1);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .disease-header h2 {
+            font-size: 2.5rem;
+            color: var(--brand-blue);
+            font-weight: 800;
+        }
+
+        .info-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            border-left: 5px solid var(--brand-cyan);
+            transition: transform 0.3s;
+        }
+
+        .info-card:hover { transform: translateY(-3px); }
+
+        .info-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            color: var(--brand-dark);
+            margin-bottom: 10px;
+        }
+
+        .info-card h3 i { color: var(--brand-blue); font-size: 1.2rem; }
+        
+        .info-card p {
+            color: #4b5563;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        /* --- 6. SCROLLBARS --- */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(3, 106, 249, 0.3); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--brand-blue); }
+
+        /* Animations */
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            body { height: auto; overflow-y: auto; padding: 20px 0; }
+            .dashboard-container { height: auto; }
+            .content-grid { grid-template-columns: 1fr; height: auto; }
+            .list-panel { height: 400px; }
+            .details-panel { min-height: 500px; }
+        }
+    </style>
+</head>
+<body>
+
+    <video class="video-bg" autoplay muted loop playsinline>
+        <source src="https://player.vimeo.com/external/452134136.sd.mp4?s=7284986687c73631780845570c04804b00f8f723&profile_id=164&oauth2_token_id=57447761" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+
+    <div class="dashboard-container">
+        
+        <div class="header-bar">
+            <div class="brand-title">
+                <i class="fas fa-book-medical"></i> Medical Encyclopedia
+            </div>
+            <div class="disclaimer">
+                <i class="fas fa-exclamation-triangle"></i> Informational Use Only
+            </div>
+        </div>
+
+        <div class="content-grid">
+            
+            <div class="list-panel">
+                <div class="search-area">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" onkeyup="filterDiseases()" placeholder="Search condition...">
+                    </div>
+                </div>
+                <div id="diseaseList" class="disease-list-container">
+                    </div>
+            </div>
+
+            <div class="details-panel" id="detailsPanel">
+                
+                <div id="emptyState" class="empty-state">
+                    <i class="fas fa-notes-medical"></i>
+                    <h2>Select a condition</h2>
+                    <p>Choose from the list on the left to view comprehensive medical details.</p>
+                </div>
+
+                <div id="detailsContent" class="details-content">
+                    <div class="disease-header">
+                        <h2 id="dTitle">Condition Name</h2>
+                    </div>
+                    
+                    <div class="info-card" data-tilt>
+                        <h3><i class="fas fa-book-open"></i> Description</h3>
+                        <p id="dDesc">Description goes here.</p>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="info-card" data-tilt>
+                            <h3><i class="fas fa-virus"></i> Causes</h3>
+                            <p id="dCauses">Causes goes here.</p>
+                        </div>
+                        <div class="info-card" data-tilt>
+                            <h3><i class="fas fa-head-side-cough"></i> Symptoms</h3>
+                            <p id="dSymptoms">Symptoms goes here.</p>
+                        </div>
+                    </div>
+
+                    <div class="info-card" data-tilt style="border-left-color: var(--status-green);">
+                        <h3><i class="fas fa-shield-alt"></i> Prevention</h3>
+                        <p id="dPrevention">Prevention goes here.</p>
+                    </div>
+
+                    <div class="info-card" data-tilt style="border-left-color: #f59e0b;">
+                        <h3><i class="fas fa-user-md"></i> Precautions & Care</h3>
+                        <p id="dPrecaution">Precaution goes here.</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+    
+    <script>
+        // --- DATA ---
+        const localDiseaseData = {
+             "Acoustic neuromas": { d: "Noncancerous tumor on the main nerve from inner ear to brain.", c: "Genetic malfunction (NF2 gene).", s: "Hearing loss, tinnitus, unsteadiness.", p: "None known.", pr: "Regular hearing tests." },
+            "Asthma": { d: "Chronic condition narrowing airways and producing extra mucus.", c: "Allergens, exercise, cold air, stress.", s: "Shortness of breath, chest tightness, wheezing.", p: "Avoid triggers.", pr: "Carry inhalers, monitor breathing." },
+            "Bladder diseases and cancers": { d: "Conditions affecting bladder function or cell growth.", c: "Smoking, chemicals, chronic inflammation.", s: "Blood in urine, frequent urination.", p: "Stop smoking, drink water.", pr: "Regular screening if high risk." },
+            "Birth defects (urological)": { d: "Congenital abnormalities of kidney or bladder.", c: "Genetic factors, exposure during pregnancy.", s: "Recurring UTIs, swelling.", p: "Prenatal care.", pr: "Early surgical intervention." },
+            "Bone diseases": { d: "Disorders affecting bone strength (e.g., Osteoporosis).", c: "Aging, calcium deficiency, hormonal changes.", s: "Fractures, back pain, stooped posture.", p: "Calcium/Vitamin D intake, exercise.", pr: "Fall prevention." },
+            "Brain tumours": { d: "Mass or growth of abnormal cells in the brain.", c: "Radiation exposure, family history.", s: "Headaches, seizures, personality changes.", p: "Limit radiation exposure.", pr: "Seek help for persistent headaches." },
+            "Bronchitis (acute and chronic)": { d: "Inflammation of the lining of bronchial tubes.", c: "Viruses, smoking, air pollution.", s: "Cough with mucus, fatigue, chest discomfort.", p: "Don't smoke, wash hands.", pr: "Rest, fluids, humidifier." },
+            "Cardiac conditions": { d: "Range of heart diseases including CAD, arrhythmias.", c: "Diet, genetics, inactivity, smoking.", s: "Chest pain, breathlessness, palpitations.", p: "Healthy diet, exercise.", pr: "Regular checkups, medication adherence." },
+            "Cancer (General)": { d: "Uncontrolled division of abnormal cells.", c: "Genetics, carcinogens, lifestyle.", s: "Lumps, weight loss, fatigue.", p: "Avoid tobacco, sun safety.", pr: "Screenings, early detection." },
+            "Colon problems": { d: "Issues like colitis, polyps, or IBS.", c: "Diet, inflammation, stress.", s: "Abdominal pain, bowel habit changes.", p: "High fiber diet, hydration.", pr: "Colonoscopy screening." },
+            "Complex trauma": { d: "Multiple traumatic injuries to bones/soft tissue.", c: "High-impact accidents (crashes, falls).", s: "Severe pain, deformity, bleeding.", p: "Safety gear, driving safety.", pr: "Immediate emergency care." },
+            "Dementia": { d: "Decline in mental ability severe enough to interfere with daily life.", c: "Brain cell damage (Alzheimer's, stroke).", s: "Memory loss, confusion, language issues.", p: "Brain-healthy diet, mental exercise.", pr: "Safe environment, supervision." },
+            "Degenerative disc disease": { d: "Wear and tear on spinal discs.", c: "Aging, drying of discs, injuries.", s: "Neck/back pain, numbness.", p: "Good posture, core exercise.", pr: "Avoid heavy lifting." },
+            "Diabetes (Type 1 & 2)": { d: "Chronic condition affecting blood sugar regulation.", c: "Autoimmune (T1), Lifestyle/Genetics (T2).", s: "Thirst, frequent urination, blurry vision.", p: "Healthy weight (T2).", pr: "Monitor glucose, foot care." },
+            "Epilepsy": { d: "Neurological disorder causing seizures.", c: "Brain injury, genetics, unknown.", s: "Convulsions, staring spells.", p: "Prevent head injuries.", pr: "Avoid triggers (lights, sleep deprivation)." },
+            "Erectile dysfunction": { d: "Inability to keep an erection.", c: "Heart disease, diabetes, stress.", s: "Sexual difficulty.", p: "Healthy vascular system.", pr: "Consult urologist." },
+            "Fungal infections": { d: "Infection by fungi (e.g., Athlete's foot).", c: "Warm/damp environments, weak immunity.", s: "Itching, redness, peeling skin.", p: "Hygiene, dry skin.", pr: "Antifungal meds." },
+            "Gastro-intestinal diseases": { d: "General digestive system disorders.", c: "Infections, diet, structural issues.", s: "Vomiting, diarrhea, pain.", p: "Food hygiene.", pr: "Hydration." },
+            "Headaches": { d: "Pain in head or upper neck.", c: "Tension, dehydration, sinus issues.", s: "Throbbing or dull pain.", p: "Hydration, sleep, posture.", pr: "Track triggers." },
+            "Herniated discs": { d: "Soft center of spinal disc pushes out.", c: "Lifting strain, aging.", s: "Arm/leg pain, numbness.", p: "Proper lifting technique.", pr: "Physical therapy." },
+            "High cholesterol": { d: "Fatty deposits in blood vessels.", c: "Diet, inactivity, genetics.", s: "None (silent) until stroke/infarct.", p: "Low sat-fat diet, cardio.", pr: "Statins if prescribed." },
+            "Infections (urological)": { d: "UTIs, kidney infections.", c: "Bacteria entering urinary tract.", s: "Burning urination, cloudy urine.", p: "Hydration, hygiene.", pr: "Antibiotics." },
+            "Kidney stones": { d: "Hard deposits of minerals in kidneys.", c: "Dehydration, diet.", s: "Severe side pain, pink urine.", p: "Drink water, limit oxalates.", pr: "Pain management." },
+            "Liver diseases": { d: "Hepatitis, fatty liver, cirrhosis.", c: "Alcohol, viruses, obesity.", s: "Jaundice, fatigue, swelling.", p: "Vaccines, moderation.", pr: "Avoid alcohol." },
+            "Migraines": { d: "Severe recurring headaches.", c: "Hormones, food triggers, stress.", s: "Pulsing pain, light sensitivity.", p: "Identify triggers.", pr: "Dark room, meds." },
+            "Multiple sclerosis": { d: "Immune system eats nerves' protective covering.", c: "Autoimmune.", s: "Vision loss, fatigue, numbness.", p: "Vitamin D helps.", pr: "Disease-modifying drugs." },
+            "Parkinson's disease": { d: "CNS disorder affecting movement.", c: "Low dopamine levels.", s: "Tremor, stiff muscles.", p: "Caffeine/Exercise may help.", pr: "Fall prevention." },
+            "Stroke": { d: "Blood supply to brain interrupted.", c: "Clot (Ischemic) or Bleed (Hemorrhagic).", s: "Face drooping, arm weakness.", p: "Control BP, don't smoke.", pr: "Time is brain (ER ASAP)." }
+        };
+
+        // --- FUNCTIONS ---
+
+        function init() {
+            const listContainer = document.getElementById('diseaseList');
+            const diseases = Object.keys(localDiseaseData).sort();
+
+            diseases.forEach(disease => {
+                const div = document.createElement('div');
+                div.className = 'disease-item';
+                div.textContent = disease;
+                div.onclick = () => selectDisease(disease, div);
+                listContainer.appendChild(div);
+            });
+        }
+
+        function selectDisease(name, element) {
+            // Highlight Active
+            document.querySelectorAll('.disease-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+
+            // Show Content Area
+            document.getElementById('emptyState').style.display = 'none';
+            const content = document.getElementById('detailsContent');
+            content.classList.remove('active'); // Reset anim
+            
+            // Populate Data
+            const data = localDiseaseData[name];
+            document.getElementById('dTitle').textContent = name;
+            document.getElementById('dDesc').textContent = data.d;
+            document.getElementById('dCauses').textContent = data.c;
+            document.getElementById('dSymptoms').textContent = data.s;
+            document.getElementById('dPrevention').textContent = data.p;
+            document.getElementById('dPrecaution').textContent = data.pr;
+
+            // Trigger Fade In
+            setTimeout(() => {
+                content.classList.add('active');
+                // Re-init tilt on new elements (if dynamic, though here they are static in DOM)
+            }, 50);
+        }
+
+        function filterDiseases() {
+            const input = document.getElementById('searchInput').value.toUpperCase();
+            const items = document.querySelectorAll('.disease-item');
+            
+            items.forEach(item => {
+                const txt = item.textContent || item.innerText;
+                if (txt.toUpperCase().indexOf(input) > -1) {
+                    item.style.display = "";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        }
+
+        // Init Tilt on cards
+        VanillaTilt.init(document.querySelectorAll(".info-card"), {
+            max: 5,
+            speed: 400,
+            glare: true,
+            "max-glare": 0.1,
+        });
+
+        window.onload = init;
+    </script>
+
+</body>
+</html>

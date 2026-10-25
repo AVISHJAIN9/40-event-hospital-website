@@ -1,0 +1,69 @@
+/* --- Global Reset & Page Setup --- */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f2f5; /* Light, neutral background */
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh; /* Ensure the body covers the full height */
+}
+
+/* --- Header Styling --- */
+h1 {
+    color: #007bff; /* Primary brand color */
+    margin-top: 20px;
+    margin-bottom: 5px;
+    font-size: 1.8em;
+}
+
+p.note {
+    color: #6c757d;
+    font-size: 0.9em;
+    margin-bottom: 20px;
+}
+
+/* --- Main Video Container --- */
+#meet-container {
+    /* Use viewport units for adaptive sizing */
+    width: 95%; 
+    height: 80vh; 
+    max-width: 1200px; /* Limit max width for large screens */
+    
+    /* Center the container */
+    margin: 0 auto;
+    
+    /* Styling for a clean, elevated look */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); /* Soft, professional shadow */
+    border-radius: 12px;
+    overflow: hidden; /* Important to contain the embedded video */
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+}
+
+/* --- Responsiveness for Smaller Screens (Optional) --- */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.5em;
+    }
+    
+    #meet-container {
+        /* On small screens, make the video taller relative to the screen */
+        height: 85vh; 
+        width: 100%;
+        border-radius: 0; /* Remove rounded corners on full-width */
+        box-shadow: none; /* Remove shadow when full-width */
+    }
+}
+
+/* --- Jitsi iFrame Specific Styling (If needed for deeper customization) --- */
+/* The Jitsi API embeds an iframe. This targets the iframe directly if you need to. */
+#meet-container > iframe {
+    /* Ensure the iframe itself takes up 100% of the parent container */
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block; /* Removes any potential extra spacing */
+}

@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sachidaanand Health - Future of Care</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* --- 1. VARIABLES --- */
+        :root {
+            --color-bg-1: #f0f9ff;
+            --color-accent-blue: #2563eb;
+            --color-accent-cyan: #06b6d4;
+            --color-text-main: #0f172a; 
+            --color-text-muted: #475569;
+            --card-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* --- 2. ANIMATED BACKGROUND --- */
+        body {
+            background-color: #eef2f3;
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: var(--color-text-main);
+            /* Tech Grid Background */
+            background-image: 
+                linear-gradient(rgba(37, 99, 235, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(37, 99, 235, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: moveBackground 30s linear infinite;
+        }
+
+        @keyframes moveBackground {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        /* --- 3. NAVIGATION --- */
+        .main-nav {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 1200px;
+            height: 65px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.9);
+            border-radius: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .main-nav a {
+            text-decoration: none;
+            color: var(--color-text-muted);
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .main-nav a:hover, .main-nav a.active {
+            color: white;
+            background: var(--color-accent-blue);
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        /* --- 4. HERO SECTION WITH 3D ANIMATION --- */
+        .hero-section {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            perspective: 1000px; 
+        }
+
+        /* Giant Background Text */
+        .hero-bg-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 13vw; 
+            font-weight: 900;
+            color: rgba(37, 99, 235, 0.03);
+            white-space: nowrap;
+            z-index: 1;
+            pointer-events: none;
+            text-transform: uppercase;
+            letter-spacing: -5px;
+        }
+
+        /* --- THE 3D SLIDER --- */
+        .banner-slider {
+            position: absolute;
+            width: 220px; /* Card Width */
+            height: 300px; /* Card Height */
+            top: 32%; 
+            transform-style: preserve-3d; 
+            animation: autoRun 30s linear infinite;
+            z-index: 5;
+        }
+
+        @keyframes autoRun {
+            from { transform: perspective(1000px) rotateX(-5deg) rotateY(0deg); }
+            to { transform: perspective(1000px) rotateX(-5deg) rotateY(360deg); }
+        }
+
+        .banner-slider:hover {
+            animation-play-state: paused;
+            cursor: grab;
+        }
+
+        .banner-slider .item {
+            position: absolute;
+            inset: 0;
+            transform: 
+                rotateY(calc( (var(--position) - 1) * (360 / var(--quantity)) * 1deg))
+                translateZ(550px); 
+            
+            border-radius: 20px;
+            overflow: hidden;
+            border: 4px solid white;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            -webkit-box-reflect: below 10px linear-gradient(transparent, transparent, rgba(0,0,0,0.2));
+            background: #fff;
+        }
+
+        .banner-slider .item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            transition: transform 0.5s;
+        }
+        
+        .banner-slider .item:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Foreground Content */
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            margin-top: 420px; 
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            padding: 30px 50px;
+            border-radius: 30px;
+            border: 1px solid white;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: -webkit-linear-gradient(45deg, var(--color-text-main), var(--color-accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-content p {
+            color: var(--color-text-muted);
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        .search-box {
+            display: flex;
+            background: white;
+            padding: 8px;
+            border-radius: 50px;
+            box-shadow: 0 5px 20px rgba(37, 99, 235, 0.15);
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            padding: 12px 20px;
+            font-size: 1rem;
+            width: 300px;
+            border-radius: 50px;
+        }
+
+        .search-box button {
+            background: var(--color-accent-blue);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .search-box button:hover { background: var(--color-accent-cyan); }
+
+
+        /* --- 5. CARDS SECTION --- */
+        .cards-section {
+            padding: 100px 5%;
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(to bottom, transparent, white);
+        }
+
+        .section-header { text-align: center; margin-bottom: 60px; }
+        .section-header h2 { font-size: 3rem; font-weight: 800; margin-bottom: 10px; color: var(--color-text-main); }
+        .section-header p { color: var(--color-text-muted); font-size: 1.1rem; }
+
+        .cards-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 40px; }
+
+        .card {
+            position: relative;
+            width: 300px;
+            height: 420px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid white;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.5s ease;
+        }
+
+        .card .img-box {
+            position: absolute;
+            top: 20px;
+            width: 260px;
+            height: 260px;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: 0.5s;
+            z-index: 2;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card .img-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        .card .disease-label {
+            position: absolute; bottom: 30px; font-size: 1.2rem; font-weight: 700;
+            color: var(--color-text-main); transition: 0.5s; z-index: 2;
+            background: rgba(255,255,255,0.8); padding: 5px 15px; border-radius: 20px;
+        }
+
+        .card:hover .img-box { top: -100px; opacity: 0.5; transform: scale(0.8); }
+        .card:hover .disease-label { bottom: -50px; opacity: 0; }
+
+        .card .content {
+            position: absolute; top: 60px; padding: 20px; text-align: center;
+            opacity: 0; transform: translateY(50px); transition: 0.5s; z-index: 3;
+        }
+        .card:hover .content { opacity: 1; transform: translateY(0); }
+        
+        .card .content h3 { font-size: 1.5rem; color: var(--color-accent-blue); margin-bottom: 10px; }
+        .card .content p { font-size: 0.9rem; color: var(--color-text-muted); margin-bottom: 20px; line-height: 1.5; }
+        .card .content a {
+            display: inline-block; padding: 10px 25px; background: var(--color-text-main);
+            color: white; border-radius: 50px; text-decoration: none; font-weight: 500;
+            transition: background 0.3s;
+        }
+        .card .content a:hover { background: var(--color-accent-blue); }
+
+        /* --- 6. FOOTER --- */
+        .main-footer { background: white; padding: 60px 5% 20px; border-top: 1px solid rgba(0,0,0,0.05); }
+        .footer-content { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 40px; margin-bottom: 40px; }
+        .footer-left { flex: 1; min-width: 250px; }
+        .brand-logo { font-size: 2rem; font-weight: 900; color: var(--color-text-main); margin-bottom: 20px; }
+        .brand-logo span { color: var(--color-accent-blue); }
+        .social-icons a {
+            width: 40px; height: 40px; display: inline-flex; justify-content: center; align-items: center;
+            background: #f1f5f9; color: var(--color-text-main); border-radius: 50%; margin-right: 10px;
+            text-decoration: none; transition: all 0.3s;
+        }
+        .social-icons a:hover { background: var(--color-accent-blue); color: white; transform: translateY(-3px); }
+        .footer-links-grid { flex: 2; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 30px; }
+        .link-column h4 { margin-bottom: 20px; color: var(--color-text-main); }
+        .link-column ul { list-style: none; }
+        .link-column li { margin-bottom: 10px; }
+        .link-column a { text-decoration: none; color: var(--color-text-muted); font-size: 0.9rem; transition: color 0.2s; }
+        .link-column a:hover { color: var(--color-accent-blue); }
+        .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid #eee; color: #94a3b8; font-size: 0.85rem; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .banner-slider { width: 150px; height: 220px; top: 25%; }
+            .banner-slider .item { transform: rotateY(calc( (var(--position) - 1) * (360 / var(--quantity)) * 1deg)) translateZ(350px); }
+            .hero-content { margin-top: 300px; width: 90%; padding: 20px; }
+            .hero-content h1 { font-size: 1.8rem; }
+            .search-box { flex-direction: column; width: 100%; }
+            .search-box input { width: 100%; text-align: center; }
+            .search-box button { width: 100%; margin-top: 5px; }
+            .hero-bg-text { font-size: 15vw; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="main-nav">
+        <a href="main.html" class="active">Home</a>
+        <a href="ourservices.html">Specialties</a>
+        <a href="pakaging.html">Packages</a>
+        <a href="docter.html">Doctors</a>
+        <a href="emergency.html">Contact</a>
+        <a href="login.html">Login</a>
+        <a href="ADMINFORM.html">Admit Form</a>
+        <a href="arogya.html">Arogya</a>
+        <a href="BUYING MEDICINE (2) (1).html">SecureMeds</a>
+        <a href="patientportal.html">Your Space</a>
+    </nav>
+
+    <div class="hero-section">
+        
+        <div class="hero-bg-text">Sachidaanand</div>
+
+        <div class="banner-slider" style="--quantity: 9">
+            <div class="item" style="--position: 1"><img src="main8.jpg" alt="Hospital Building"></div>
+            <div class="item" style="--position: 2"><img src="main3.avif" alt="Doctors Team"></div>
+            <div class="item" style="--position: 3"><img src="main5.avif" alt="Operation Theatre"></div>
+            <div class="item" style="--position: 4"><img src="main4.avif" alt="Stethoscope"></div>
+            <div class="item" style="--position: 5"><img src="main7.webp" alt="Doctor Consultation"></div>
+            <div class="item" style="--position: 6"><img src="main6.avif" alt="Medical Monitor"></div>
+            <div class="item" style="--position: 7"><img src="main9.jpg" alt="Payment Reception"></div>
+            <div class="item" style="--position: 8"><img src="main1.avif" alt="Waiting Area"></div>
+            <div class="item" style="--position: 9"><img src="Cardiac Science.jpeg" alt="Cardiac"></div>
+        </div>
+
+        <div class="hero-content">
+            <h1>Advanced Healthcare,<br>Reimagined.</h1>
+            <p>Where compassion meets cutting-edge technology.</p>
+            <div class="search-box">
+                <input type="text" placeholder="Find a doctor, specialty, or service...">
+                <button onclick="window.open('docter.html')"><i class="fas fa-search"></i> Search</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="cards-section">
+        <div class="section-header">
+            <h2>Centres of Excellence</h2>
+            <p>Pioneering medical specialties for your well-being.</p>
+        </div>
+        
+        <div class="cards-container">
+            
+            <div class="card">
+                <div class="img-box">
+                    <img src="Cardiac Science.jpeg" alt="Cardiac">
+                </div>
+                <div class="disease-label">Cardiac Sciences</div>
+                <div class="content"> 
+                    <h3>Cardiac Sciences</h3>
+                    <p>Comprehensive heart care ranging from non-invasive cardiology to complex bypass surgeries.</p>
+                    <a href="heart.html">Explore</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="img-box">
+                    <img src="gastroenterology.jpeg" alt="Gastroenterology">
+                </div>
+                <div class="disease-label">Mental Health Games</div>
+                <div class="content"> 
+                    <h3>Gastroenterology</h3>
+                    <p>Advanced diagnosis and treatment for disorders of the digestive system.</p>
+                    <a href="panic_button.html">Explore</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="img-box">
+                    <img src="main5.avif" alt="Cancer">
+                </div>
+                <div class="disease-label">Advanced Surgery</div>
+                <div class="content"> 
+                    <h3>Advanced Surgery</h3>
+                    <p>State-of-the-art operation theatres equipped for minimally invasive procedures.</p>
+                    <a href="cancer.html">Explore</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="img-box">
+                    <img src="main3.avif" alt="Expert Team">
+                </div>
+                <div class="disease-label">Lungs</div>
+                <div class="content"> 
+                    <h3>Expert Consultants</h3>
+                    <p>A dedicated team of specialists working together to ensure your recovery.</p>
+                    <a href="lungs.html">Explore</a>
+                </div>
+            </div>
+
+        </div> 
+    </div>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-left">
+                <div class="brand-logo">Sachidaanand <span>Health</span></div>
+                <p style="color:var(--color-text-muted); margin-bottom:20px; line-height:1.5;">Providing world-class healthcare standards with a touch of compassion and care.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-links-grid">
+                <div class="link-column">
+                    <h4>Patients</h4>
+                    <ul>
+                        <li><a href="docter.html">Find a Doctor</a></li>
+                        <li><a href="docter.html">Book Appointment</a></li>
+                        <li><a href="pakaging.html">Health Packages</a></li>
+                        <li><a href="#">International Patients</a></li>
+                    </ul>
+                </div>
+                <div class="link-column">
+                    <h4>Specialties</h4>
+                    <ul>
+                        <li><a href="diseasedetails(3).html">Cardiology</a></li>
+                        <li><a href="diseasedetails(3).html">Neurology</a></li>
+                        <li><a href="diseasedetails(3).html">Orthopedics</a></li>
+                        <li><a href="diseasedetails(3).html">Oncology</a></li>
+                    </ul>
+                </div>
+                <div class="link-column">
+                    <h4>Corporate</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Media</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2024 Sachidaanand Health. All Rights Reserved.
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+    <script>
+        VanillaTilt.init(document.querySelectorAll(".card"), {
+            max: 15,
+            speed: 400,
+            glare: true,
+            "max-glare": 0.2,
+        });
+    </script>
+</body>
+</html>

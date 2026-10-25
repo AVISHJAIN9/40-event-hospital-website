@@ -1,0 +1,570 @@
+/* --- Font Imports --- */
+@import url('https://fonts.cdnfonts.com/css/ica-rubrik-black');
+@import url('https://fonts.cdnfonts.com/css/poppins');
+
+/* Universal Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ============================================== */
+/* 1. GLOBAL & BODY STYLES (From 3D Slider Page) */
+/* ============================================== */
+
+body {
+    background-color: #D2D2D2;
+    background-image:
+    repeating-linear-gradient(
+        to right, transparent 0 100px,
+        #25283b22 100px 101px
+    ),
+    repeating-linear-gradient(
+        to bottom, transparent 0 100px,
+        #25283b22 100px 101px
+    );
+    min-height: 200vh; 
+}
+
+/* Background/Grid Effect */
+body::before{
+    position: absolute;
+    width: min(1400px, 90vw);
+    top: 10%;
+    left: 50%;
+    height: 90%;
+    transform: translateX(-50%);
+    content: '';
+    background-image:none; 
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: top center;
+    pointer-events: none;
+    z-index: 1; 
+}
+
+
+/* ============================================== */
+/* 2. NAVIGATION MENU BAR */
+/* ============================================== */
+
+.main-nav {
+    position: relative; 
+    top: 20px; 
+    margin: 20px auto; 
+    width: 524px; 
+    height: 50px;
+    background: #222; 
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10; 
+}
+
+.main-nav a {
+    position: relative;
+    display: inline-block;
+    font-size: 1em;
+    font-weight: 500;
+    color: #feffff;
+    text-decoration: none;
+    padding: 0 23px; 
+    z-index: 1; 
+    border-radius: 25px;
+}
+
+.main-nav span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 95px; 
+    height: 100%;
+    background: linear-gradient(45deg, #036af9, #008cf7); 
+    border-radius: 25px;
+    transition: .5s;
+}
+
+/* Hover Effects: Moving the Span */
+.main-nav a:nth-child(1):hover ~ span { left: 0; width: 95px; }
+.main-nav a:nth-child(2):hover ~ span { left: 95px; width: 94px; }
+.main-nav a:nth-child(3):hover ~ span { left: 189px; width: 110px; }
+.main-nav a:nth-child(4):hover ~ span { left: 289px; width: 115px; }
+.main-nav a:nth-child(5):hover ~ span { left: 413px; width: 110px; }
+
+
+/* ============================================== */
+/* 3. 3D SLIDER BANNER STYLES */
+/* ============================================== */
+
+.banner{
+    width: 100%;
+    height: 100vh;
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+    padding-top: 100px; 
+}
+.banner .slider{
+    position: absolute;
+    width: 200px;
+    height: 250px;
+    top: 10%;
+    left: calc(50% - 100px);
+    transform-style: preserve-3d;
+    transform: perspective(1000px);
+    animation: autoRun 20s linear infinite;
+    z-index: 2;
+}
+@keyframes autoRun{
+    from{
+        transform: perspective(1000px) rotateX(-16deg) rotateY(0deg);
+    }to{
+        transform: perspective(1000px) rotateX(-16deg) rotateY(360deg);
+    }
+}
+
+.banner .slider .item{
+    position: absolute;
+    inset: 0 0 0 0;
+    transform: 
+        rotateY(calc( (var(--position) - 1) * (360 / var(--quantity)) * 1deg))
+        translateZ(550px);
+}
+.banner .slider .item img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.banner .content{
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(1400px, 100vw);
+    height: max-content;
+    padding-bottom: 100px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 3; 
+}
+.banner .content h1{
+    font-family: 'ICA Rubrik', sans-serif;
+    font-size: 16em;
+    line-height: 1em;
+    color: #25283B; 
+    position: relative;
+}
+.banner .content h1::after{
+    position: absolute;
+    inset: 0 0 0 0;
+    content: attr(data-content);
+    z-index: 2;
+    -webkit-text-stroke: 2px #d2d2d2;
+    color: transparent;
+}
+.banner .content .author{
+    font-family: Poppins;
+    text-align: right;
+    max-width: 200px;
+}
+.banner .content .model{
+    /* Assuming you don't have this image, commenting out background-image: url(images/model.png); */
+    width: 100%;
+    height: 75vh;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-size: auto 130%;
+    background-repeat: no-repeat;
+    background-position: top center;
+    z-index: 1; 
+}
+
+/* >>>>>>>>>>> NEW DOCTOR SEARCH BOX STYLES <<<<<<<<<<< */
+.doctor-search-box {
+    position: absolute;
+    bottom: 50px; /* Adjust vertical position */
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(80%, 600px);
+    display: flex;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    border-radius: 50px;
+    overflow: hidden;
+    z-index: 4; /* Ensure it is above the banner content */
+}
+
+.doctor-search-box input {
+    flex-grow: 1;
+    padding: 15px 25px;
+    border: none;
+    font-size: 1.1em;
+    outline: none;
+}
+
+.doctor-search-box .search-button {
+    background-color: #036af9; /* Blue color from your nav bar */
+    color: white;
+    text-decoration: none;
+    padding: 15px 30px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background-color 0.3s;
+}
+
+.doctor-search-box .search-button:hover {
+    background-color: #008cf7; 
+}
+/* >>>>>>>>>>> END NEW DOCTOR SEARCH BOX STYLES <<<<<<<<<<< */
+
+
+/* ============================================== */
+/* 4. TILT CARDS SECTION STYLES */
+/* ============================================== */
+
+.cards-section {
+    width: 100%;
+    min-height: 100vh;
+    padding: 100px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: transparent; 
+    position: relative;
+}
+
+.cards-section .section-title {
+    font-size: 2.5em;
+    color: #25283B; /* Dark color to match the banner text/nav contrast */
+    text-align: center;
+    margin-bottom: 50px;
+    padding-top: 50px; 
+}
+
+.container{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 1200px;
+    flex-wrap: wrap;
+    z-index: 1;
+}
+
+.container .card{
+    position: relative;
+    width: 300px; 
+    height: 480px; 
+    margin: 30px;
+    box-shadow: 20px 20px 50px rgba(0,0,0,0.5);
+    border-radius: 15px;
+    background: rgb(255,255,255,0.1); 
+    overflow: hidden; 
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.5);
+    border-left: 1px solid rgba(255,255,255,0.5);
+    backdrop-filter:blur(5px) ; 
+}
+
+.container .card .img-box
+{
+    position: absolute; 
+    top: 30px; 
+    width: 250px; 
+    height: 250px; 
+    transition: 0.5s; 
+    opacity: 1; 
+    transform: translateY(0);
+}
+
+.container .card .img-box img
+{
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    border-radius: 15px 15px 0 0; /* Adjust for label underneath */
+}
+
+/* Disease Label below image */
+.card .disease-label {
+    width: 250px; /* Match the img-box width */
+    position: absolute;
+    top: 280px; /* Position it right below the 250px image + 30px top margin */
+    padding: 8px 0; 
+    
+    background: #111; 
+    color: #fff; 
+    
+    text-align: center; 
+    font-size: 1em; 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    z-index: 10;
+    
+    border-radius: 0 0 15px 15px; 
+}
+
+/* On hover, make the image slide UP and fade OUT */
+.container .card:hover .img-box,
+.container .card:hover .disease-label 
+{
+    transform: translateY(-80px); 
+    opacity: 0;
+}
+
+.container .card .content
+{
+    padding:30px; 
+    text-align: center; 
+    transform: translateY(200px); 
+    opacity:0; 
+    transition: 0.5s;
+}
+
+/* On hover, slide content to its final position */
+.container .card:hover .content
+{
+    transform: translateY(40px); 
+    opacity:1;
+}
+
+/* Large background text (Now the Disease Name) */
+.container .card .content h2
+{
+    position: absolute; 
+    top:-50px; 
+    right:30px; 
+    font-size: 8em; 
+    color:rgba(255,255,255,0.5); 
+    pointer-events: none;
+    text-transform: uppercase; 
+    line-height: 1;
+}
+.container .card .content h3
+{
+    font-size: 2.2rem; 
+    color:#fff; 
+    z-index:1;
+}
+.container .card .content p{
+    font-size: 1.1em; 
+    color :#fff; 
+    font-weight: 300;
+}
+.container .card .content a{
+    position: relative; 
+    display:inline-block; 
+    padding: 10px 25px; 
+    margin-top: 20px ; 
+    background: #fff; 
+    color: #000; 
+    border-radius:20px; 
+    text-decoration: none; 
+    font-weight: 500; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+
+/* ============================================== */
+/* 5. FOOTER STYLES */
+/* ============================================== */
+
+.main-footer {
+    background-color: #f5f5f5; 
+    padding: 40px 80px 20px 80px; 
+    color: #333; 
+    font-size: 14px;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #ddd; 
+}
+
+/* Left Section (Branding, Social, Subscribe, App) */
+.footer-left {
+    width: 30%; 
+}
+
+.brand-logo {
+    margin-bottom: 30px;
+}
+
+.brand-logo img {
+    max-width: 150px; 
+    height: auto;
+}
+
+.main-footer h4 { 
+    color: #333;
+    font-size: 16px;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+/* Social Icons */
+.social-icons a {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border-radius: 50%;
+    margin-right: 10px;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.facebook { background-color: #3b5998; }
+.x-twitter { background-color: #000; }
+.linkedin { background-color: #0e76a8; }
+.instagram { background-color: #c13584; }
+
+/* Subscription Form */
+.subscription-form {
+    display: flex;
+    width: 100%;
+    max-width: 250px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.subscription-form input {
+    flex-grow: 1;
+    border: none;
+    padding: 8px 10px;
+    outline: none;
+    font-size: 13px;
+}
+
+.subscription-form button {
+    background-color: white; 
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    color: #007bff; 
+}
+
+/* App Download Links - Placeholder images were removed in previous steps, so this section is empty */
+
+
+/* Links Grid Section */
+.footer-links-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 20px;
+    width: 65%; 
+}
+
+.link-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.link-column li {
+    margin-bottom: 8px;
+}
+
+.link-column a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500; 
+}
+
+.link-column a:hover {
+    text-decoration: underline;
+    color: #007bff; 
+}
+
+/* Footer Bottom (Show More Links) */
+.footer-bottom {
+    text-align: center;
+    padding-top: 20px;
+}
+
+.show-more {
+    color: #007bff; 
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.arrow-down {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 5px;
+    vertical-align: middle;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #007bff;
+}
+
+
+/* ============================================== */
+/* 6. MEDIA QUERIES (Combined) */
+/* ============================================== */
+
+@media (max-width: 1023px) {
+    /* Slider Adjustments */
+    .banner .slider{ width: 160px; height: 200px; left: calc(50% - 80px); }
+    .banner .slider .item{ transform: rotateY(calc( (var(--position) - 1) * (360 / var(--quantity)) * 1deg)) translateZ(300px); }
+    .banner .content h1{ text-align: center; width: 100%; text-shadow: 0 10px 20px #000; font-size: 7em; }
+    .banner .content .author{ color: #fff; padding: 20px; text-shadow: 0 10px 20px #000; z-index: 2; max-width: unset; width: 100%; text-align: center; padding: 0 30px; }
+    
+    /* Search Box Adjustment */
+    .doctor-search-box {
+        bottom: 20px;
+        width: 90%;
+    }
+
+    /* Footer Adjustments */
+    .main-footer { padding: 20px; }
+    .footer-content { flex-direction: column; }
+    .footer-left, .footer-links-grid { width: 100%; }
+    .footer-links-grid { grid-template-columns: repeat(2, 1fr); margin-top: 30px; }
+}
+
+@media (max-width: 767px) {
+    /* Slider Adjustments */
+    .banner .slider{ width: 100px; height: 150px; left: calc(50% - 50px); }
+    .banner .slider .item{ transform: rotateY(calc( (var(--position) - 1) * (360 / var(--quantity)) * 1deg)) translateZ(180px); }
+    .banner .content h1{ font-size: 5em; }
+    
+    /* Navigation Adjustments */
+    .main-nav { flex-wrap: wrap; height: auto; width: 95%; }
+    .main-nav span { display: none; }
+    
+    /* Card Adjustments */
+    .container .card { width: 90%; height: auto; }
+    .container .card .img-box { width: 150px; height: 150px; }
+    .card .disease-label { width: 150px; top: 180px; } 
+    
+    /* Search Box Adjustment */
+    .doctor-search-box {
+        bottom: 10px;
+        flex-direction: column;
+        border-radius: 10px;
+    }
+    .doctor-search-box input, .doctor-search-box .search-button {
+        border-radius: 0;
+        text-align: center;
+        width: 100%;
+    }
+}

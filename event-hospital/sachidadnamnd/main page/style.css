@@ -1,0 +1,135 @@
+.body{
+    background-color:rgb(212, 212, 212);
+}
+.navigation{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color:whitesmoke;
+    border-radius: 100rem;
+    border-color: black;
+    text-decoration: none;
+    height:"20px";
+    width:"30px";
+}
+.logo{
+    height: 30px;
+    width: 60px;
+    padding-left: 10px;
+    overflow: hidden;
+    border-radius: 50%;
+}
+.p{
+    box-sizing: border-box;
+    justify-content: space-between;
+    padding:13px;
+    text-decoration: none;
+}
+.p a {
+    text-decoration: none;
+        height:"20px";
+    width:"30px";
+    color:fuchsia
+}
+.pp a {
+    text-decoration: none;
+}
+.pp{
+     box-sizing: border-box;
+    justify-content: space-between;
+    padding:13px;
+    text-decoration: none;
+    box-sizing: border-box;
+    border-radius: 80rem;
+    background-color: black;
+    margin:10px;
+}
+
+.marquee-container {
+    width: 80%;
+    max-width: 600px;
+    overflow: hidden; /* Hides content outside the container */
+    border: 1px solid #ccc;
+    background-color: #fff;
+    padding: 10px 0;
+}
+
+.imagescroller {
+    display: flex;
+    white-space: nowrap; /* Prevents items from wrapping */
+    animation: scroll-left 15s infinite; /* Animation definition */
+}
+
+.scroller-content span {
+    padding: 0 20px;
+    font-size: 1.2em;
+    color: #333;
+    flex-shrink: 0; /* Prevents items from shrinking */
+}
+
+@keyframes scroll-left {
+    0% {
+        transform: translateX(0); /* Start position */
+    }
+    100% {
+        transform: translateX(-50%); /* End position (half of content width) */
+    }
+}
+.space{
+    padding : 40px;
+    padding-left:100px;
+    padding-right:100px;
+}
+
+/* This is the main parent container */
+.footer-container {
+    display: flex;
+    justify-content: space-between; /* Spreads the columns out */
+    background-color: #f0f0f0;
+    padding: 40px 20px;
+    font-family: Arial, sans-serif;
+}
+
+/* This styles all four of your columns */
+.footer-column {
+    flex: 1; /* Each column shares the space */
+    padding: 0 15px; /* Space between columns */
+}
+
+/* This styles the headings (e.g., "Patient Guide") */
+.footer-column h3 {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px; /* Space below the heading */
+}
+
+/* --- THIS IS THE KEY CHANGE --- */
+/* This styles the lists of links */
+.footer-column ul {
+    list-style: none; /* Removes the bullet points */
+    padding: 0;
+    margin: 0;
+    
+    display: flex;     /* Puts items side-by-side */
+    flex-wrap: wrap;   /* Lets them wrap to a new line if space runs out */
+    gap: 10px 15px;  /* Adds space: 10px between rows, 15px between items */
+}
+
+/* This makes sure the old vertical margin is gone */
+.footer-column li {
+    margin-bottom: 0;
+}
+/* --- END OF KEY CHANGE --- */
+
+
+/* This styles the actual links */
+.footer-column a {
+    text-decoration: none; /* Removes the underline */
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.footer-column a:hover {
+    text-decoration: underline; /* Adds underline on hover */
+}

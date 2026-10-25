@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sachidaanand Health - Mental Declutter</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* --- 1. BRAND VARIABLES --- */
+        :root {
+            --brand-blue: #036af9;
+            --brand-cyan: #06b6d4;
+            --brand-dark: #0f172a;
+            --text-light: #f8fafc;
+            
+            --glass-bg: rgba(15, 23, 42, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            
+            --paper-color: #ffffff;
+            --paper-text: #1e293b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--brand-dark);
+        }
+
+        /* --- 2. VIDEO BACKGROUND --- */
+        .video-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            filter: brightness(0.5) hue-rotate(190deg); 
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(3, 106, 249, 0.2), rgba(6, 182, 212, 0.1));
+            backdrop-filter: blur(5px);
+            z-index: 1;
+        }
+
+        /* --- 3. MAIN CONTAINER --- */
+        .app-wrapper {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, var(--brand-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.7);
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        }
+
+        /* --- 4. THE PAPER & SHREDDER --- */
+        .shredder-machine {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--glass-shadow);
+            position: relative;
+            /* 3D Tilt Setup */
+            transform-style: preserve-3d;
+            transform: perspective(1000px);
+        }
+
+        /* The Paper Input Area */
+        .paper-container {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            background: var(--paper-color);
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+            overflow: hidden; /* Keep text inside */
+        }
+
+        textarea {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+            padding: 25px;
+            font-family: 'Outfit', sans-serif; /* Handwritten font style is optional */
+            font-size: 1.2rem;
+            color: var(--paper-text);
+            resize: none;
+            outline: none;
+            line-height: 1.6;
+            background-image: linear-gradient(#eee 1px, transparent 1px);
+            background-size: 100% 30px; /* Notebook lines */
+        }
+
+        textarea::placeholder { color: #94a3b8; font-style: italic; }
+
+        /* The Shredded Strips (Hidden initially) */
+        .strip {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--paper-color);
+            color: var(--paper-text);
+            padding: 25px;
+            box-sizing: border-box;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            overflow: hidden;
+            display: none; 
+            background-image: linear-gradient(#eee 1px, transparent 1px);
+            background-size: 100% 30px;
+            pointer-events: none;
+            box-shadow: 2px 5px 10px rgba(0,0,0,0.1);
+        }
+
+        /* --- 5. ACTION BUTTON --- */
+        .shred-btn {
+            margin-top: 30px;
+            background: linear-gradient(135deg, #ef4444, #dc2626); /* Red for "Delete" action */
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .shred-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(239, 68, 68, 0.6);
+        }
+
+        .shred-btn:active { transform: scale(0.95); }
+
+        /* --- 6. ANIMATIONS --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Advanced Shred Animation */
+        @keyframes shredFall {
+            0% { 
+                transform: translateY(0) translateZ(0) rotateX(0);
+                opacity: 1;
+            }
+            100% { 
+                transform: translateY(600px) translateZ(100px) rotateX(360deg) rotateY(20deg); 
+                opacity: 0; 
+            }
+        }
+        
+        /* Status Message */
+        #status-msg {
+            margin-top: 20px;
+            height: 20px;
+            color: var(--brand-cyan);
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .header h1 { font-size: 2rem; }
+            .paper-container { height: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+    <video class="video-bg" autoplay muted loop playsinline>
+        <source src="https://player.vimeo.com/external/484260975.sd.mp4?s=5e769345452325a4752640225235c6c013721d16&profile_id=164&oauth2_token_id=57447761" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+
+    <div class="app-wrapper">
+        
+        <div class="header">
+            <h1>Mental Declutter</h1>
+            <p>Write down what's bothering you. Then, let it go forever.</p>
+        </div>
+
+        <div class="shredder-machine" id="tilt-card">
+            <div class="paper-container" id="paperContainer">
+                <textarea id="worryInput" placeholder="I am feeling stressed about..."></textarea>
+            </div>
+        </div>
+
+        <button class="shred-btn" onclick="shredIt()">
+            <i class="fas fa-trash-alt"></i> Shred It
+        </button>
+        
+        <div id="status-msg">Gone forever. Feel lighter?</div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+    
+    <script>
+        // Init Tilt Effect
+        VanillaTilt.init(document.getElementById("tilt-card"), {
+            max: 10,
+            speed: 400,
+            glare: true,
+            "max-glare": 0.2,
+        });
+
+        function shredIt() {
+            const input = document.getElementById('worryInput');
+            const container = document.getElementById('paperContainer');
+            const text = input.value;
+            const msg = document.getElementById('status-msg');
+
+            if (!text.trim()) {
+                // Shake animation for empty input
+                container.style.transform = "translateX(10px)";
+                setTimeout(() => container.style.transform = "translateX(-10px)", 50);
+                setTimeout(() => container.style.transform = "translateX(0)", 100);
+                return;
+            }
+
+            // 1. Hide the original input
+            input.style.opacity = '0';
+
+            // 2. Create Strips
+            const stripsCount = 15; // More strips for smoother effect
+            const stripWidth = 100 / stripsCount; 
+
+            for (let i = 0; i < stripsCount; i++) {
+                const strip = document.createElement('div');
+                strip.classList.add('strip');
+                strip.innerText = text;
+                strip.style.display = 'block';
+
+                // Clip Path Magic
+                const left = i * stripWidth;
+                const right = (i + 1) * stripWidth;
+                strip.style.clipPath = `polygon(${left}% 0, ${right}% 0, ${right}% 100%, ${left}% 100%)`;
+                
+                // Randomize Animation
+                const randomDelay = Math.random() * 0.3; // Slight stagger
+                const randomDuration = 1.5 + Math.random(); // 1.5s to 2.5s fall time
+                const randomRotation = (Math.random() * 40) - 20; // Twist as it falls
+                
+                // Apply animation dynamically
+                strip.style.animation = `shredFall ${randomDuration}s ease-in forwards`;
+                strip.style.animationDelay = `${randomDelay}s`;
+                
+                // Optional: Add slight horizontal drift
+                strip.style.transform = `rotate(${randomRotation}deg)`;
+
+                container.appendChild(strip);
+            }
+
+            // 3. Success Message
+            setTimeout(() => {
+                msg.style.opacity = '1';
+            }, 1000);
+
+            // 4. Reset
+            setTimeout(() => {
+                container.innerHTML = ''; // Remove strips
+                input.value = '';
+                input.style.opacity = '1'; // Show input
+                container.appendChild(input);
+                msg.style.opacity = '0';
+            }, 3500);
+        }
+    </script>
+</body>
+</html>

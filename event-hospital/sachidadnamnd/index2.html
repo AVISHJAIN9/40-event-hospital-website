@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sticky Scroll Effect</title>
+    
+    <!-- 1. Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 2. Lucide Icons -->
+    <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide.js"></script>
+    <!-- 3. Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- 4. External Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-100">
+
+    <!-- 
+      This is the main 2-column container.
+      We use 'flex' and 'items-start' to make sure the
+      sticky column aligns to the top.
+    -->
+    <div class="main-container max-w-7xl mx-auto flex items-start py-16">
+
+        <!-- 
+          =======================================
+          COLUMN 1: LEFT (STICKY)
+          =======================================
+        -->
+        <div class="left-column w-1/2">
+            <!-- This is the sticky panel that holds the content -->
+            <div class="sticky-panel sticky top-16">
+                
+                <!-- This wrapper holds the swapping content panels -->
+                <div class="left-content-wrapper relative h-[80vh] bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+
+                    <!-- LEFT PANEL 1 (Image 1) - Active by default -->
+                    <div id="left-panel-1" class="left-content-panel is-active">
+                        <div class="p-10">
+                            <h1 class="text-4xl font-bold text-white mb-6">This is Panel 1</h1>
+                            <p class="text-gray-300 mb-8">It is visible while you scroll through the first section on the right.</p>
+                        </div>
+                        <img src="https://placehold.co/800x600/6366F1/FFFFFF?text=Image+1" alt="Image 1" class="w-full h-auto object-cover">
+                    </div>
+
+                    <!-- LEFT PANEL 2 (Image 2) - Hidden by default -->
+                    <div id="left-panel-2" class="left-content-panel">
+                        <div class="p-10">
+                            <h1 class="text-4xl font-bold text-white mb-6">This is Panel 2</h1>
+                            <p class="text-gray-300 mb-8">This new content (and new image) appears when you reach the "50% point" on the right.</p>
+                        </div>
+                        <img src="https://placehold.co/800x600/EC4899/FFFFFF?text=Image+2" alt="Image 2" class="w-full h-auto object-cover">
+                    </div>
+                    
+                    <!-- LEFT PANEL 3 (Example) -->
+                    <div id="left-panel-3" class="left-content-panel">
+                        <div class="p-10">
+                            <h1 class="text-4xl font-bold text-white mb-6">This is Panel 3</h1>
+                            <p class="text-gray-300 mb-8">This is the final content panel.</p>
+                        </div>
+                        <img src="https://placehold.co/800x600/10B981/FFFFFF?text=Image+3" alt="Image 3" class="w-full h-auto object-cover">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- 
+          =======================================
+          COLUMN 2: RIGHT (SCROLLING)
+          =======================================
+          This column is extra tall to create scroll space.
+        -->
+        <div class="right-column w-1/2 py-0 px-10 space-y-8">
+
+            <!-- 
+              RIGHT SECTION 1 (0% - 33%)
+            -->
+            <section class="scroll-section h-screen">
+                <!-- This trigger activates Panel 1 -->
+                <div class="scroll-trigger" data-target="left-panel-1"></div>
+                
+                <h2 class="text-3xl font-bold mb-2 pt-16">Section 1 (0-33%)</h2>
+                <p class="text-gray-600 mb-8">As you scroll through this section, the left panel remains fixed on **Image 1**.</p>
+                
+                <div class="info-card space-y-3">
+                    <img src="https://placehold.co/400x300/EBF4FF/4A5568?text=Card+A" class="rounded-lg w-full h-32 object-cover" alt="Card A">
+                    <h3 class="font-bold text-lg">Card A</h3>
+                    <p class="text-sm text-gray-600">This is the first piece of content on the right.</p>
+                </div>
+                
+                <!-- This empty div creates the scroll space for this section -->
+                <div class="h-[70vh]"></div> 
+            </section>
+
+            <!-- 
+              RIGHT SECTION 2 (33% - 66%)
+            -->
+            <section class="scroll-section h-screen">
+                <!-- THIS IS THE 33% TRIGGER -->
+                <div class="scroll-trigger" data-target="left-panel-2"></div>
+                
+                <h2 class="text-3xl font-bold mb-2 pt-16">Section 2 (33-66%)</h2>
+                <p class="text-gray-600 mb-8">Now that you've hit this section, the left panel has switched to **Image 2**.</p>
+                
+                <div class="info-card space-y-3">
+                    <img src="https://placehold.co/400x300/E6FFFA/4A5568?text=Card+B" class="rounded-lg w-full h-32 object-cover" alt="Card B">
+                    <h3 class="font-bold text-lg">Card B</h3>
+                    <p class="text-sm text-gray-600">This is the second piece of content.</p>
+                </div>
+
+                <!-- This empty div creates the scroll space for this section -->
+                <div class="h-[70vh]"></div>
+            </section>
+            
+            <!-- 
+              RIGHT SECTION 3 (66% - 100%)
+            -->
+            <section class="scroll-section h-screen">
+                <!-- THIS IS THE 66% TRIGGER -->
+                <div class="scroll-trigger" data-target="left-panel-3"></div>
+                
+                <h2 class="text-3xl font-bold mb-2 pt-16">Section 3 (66-100%)</h2>
+                <p class="text-gray-600 mb-8">And now, you've reached the final section, showing **Image 3**.</p>
+                
+                <div class="info-card space-y-3">
+                    <img src="https://placehold.co/400x300/FFF5E6/4A5568?text=Card+C" class="rounded-lg w-full h-32 object-cover" alt="Card C">
+                    <h3 class="font-bold text-lg">Card C</h3>
+                    <p class="text-sm text-gray-600">This is the third and final piece of content.</p>
+                </div>
+
+                <!-- This empty div creates the scroll space for this section -->
+                <div class="h-[70vh]"></div>
+            </section>
+
+        </div> <!-- End Right Column -->
+
+    </div> <!-- End Main Container -->
+
+
+    <!-- 
+      =======================================
+      FOOTER CONTENT (After 100%)
+      =======================================
+    -->
+    <footer class="bg-gray-800 text-white p-16 text-center">
+        <h2 class="text-3xl font-bold">This is the Footer Content</h2>
+        <p class="mt-4">You have scrolled past 100% of the right column.</p>
+        <p>Now, everything (including the left panel) scrolls up normally.</p>
+    </footer>
+
+
+    <!-- 5. External JavaScript -->
+    <script src="script.js"></script>
+
+</body>
+</html>

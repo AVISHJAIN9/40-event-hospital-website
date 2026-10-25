@@ -1,0 +1,257 @@
+/* GLOBAL RESET & FONT */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* BODY - NEW LIGHT BLUE BACKGROUND */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    /* Clean, Professional Light Hospital Blue */
+    background-color: #e6f2ff; 
+}
+
+/* MAIN CONTAINER */
+.container {
+    position: relative;
+    max-width: 1200px;
+    padding: 20px 20px 50px;
+    z-index: 1; 
+    width: 100%; 
+}
+
+/* HEADER */
+.container .header h1 {
+    letter-spacing: 3px;
+    font-size: 2.2em; 
+    text-align: center;
+    border-bottom: 3px solid #0050b3; /* Darker Blue underline */
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+    color: #003366; 
+}
+
+/* SEARCH AND FILTER LAYOUT */
+.search-and-filter-area {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 40px;
+    align-items: flex-start; /* Aligns filter and search bar to the top */
+}
+
+/* FILTER SIDEBAR STYLES (Left Column) */
+.filter-sidebar {
+    width: 250px;
+    flex-shrink: 0; /* Prevents shrinking */
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.filter-sidebar h2 {
+    font-size: 1.2em;
+    color: #003366;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+}
+.filter-sidebar .checkbox-group {
+    display: flex;
+    flex-direction: column;
+}
+.filter-sidebar label {
+    font-size: 0.9em;
+    color: #343a40;
+    margin-bottom: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+.filter-sidebar input[type="checkbox"] {
+    margin-right: 10px;
+    accent-color: #0050b3; /* Blue highlight for checkbox */
+}
+
+/* SEARCH BAR STYLES (Right Column) */
+.main-doctor-view {
+    flex-grow: 1; /* Ensures this column takes up the remaining space */
+}
+.search-bar input {
+    width: 100%;
+    padding: 12px 18px; 
+    background: rgba(255, 255, 255, 0.9); 
+    border: 1px solid #ccc; 
+    color: #003366; 
+    font-size: 1em;
+    border-radius: 50px; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px; /* Space above the doctor list */
+}
+.search-bar input::placeholder {
+    color: #6c757d; 
+}
+
+/* DOCTOR LISTS GRID */
+.products-lists {
+    display: flex;
+    justify-content: center; 
+    flex-wrap: wrap;
+    gap: 30px; 
+}
+
+/* CARD - BASE STYLES (Glassmorphism) */
+.container .card {
+    position: relative;
+    width: 280px; 
+    height: 400px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); 
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.8); 
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    border: 1px solid rgba(0, 51, 102, 0.1); 
+    backdrop-filter: blur(5px); 
+    transition: 0.5s; 
+}
+
+/* IMAGE BOX */
+.container .card .img-box {
+    position: absolute;
+    top: 20px; 
+    width: 150px; 
+    height: 150px; 
+    border-radius: 50%; 
+    overflow: hidden;
+    border: 5px solid #ffffff; 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: 0.5s;
+    opacity: 1;
+    transform: translateY(0);
+}
+/* ADJUSTED: Slides up less */
+.container .card:hover .img-box {
+    transform: translateY(-50px); 
+    opacity: 0; 
+}
+
+/* ALWAYS VISIBLE DETAILS SECTION */
+.container .card .card-visible-info {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 180px; 
+    padding: 10px 20px; 
+    text-align: center;
+    background: rgba(240, 247, 255, 0.8); 
+    border-top: 1px solid rgba(0, 51, 102, 0.1);
+    transition: 0.5s;
+    z-index: 10; 
+    transform: translateY(0);
+}
+/* ADJUSTED: Slides down less */
+.container .card:hover .card-visible-info {
+    transform: translateY(150px); 
+    opacity: 0; 
+}
+
+.container .card .card-visible-info h3 {
+    font-size: 1.4rem;
+    color: #003366;
+    margin-top: 5px;
+    margin-bottom: 2px;
+}
+.container .card .card-visible-info h4 {
+    font-size: 1rem;
+    color: #0050b3; /* Darker blue for specialty */
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+.container .card .card-visible-info p {
+    font-size: 0.9rem;
+    color: #343a40;
+}
+
+
+/* HOVER CONTENT BOX */
+.container .card .content {
+    padding: 20px;
+    text-align: center;
+    /* Starting position is off-screen */
+    transform: translateY(400px); 
+    opacity: 0;
+    transition: 0.5s;
+    position: relative; 
+    z-index: 5;
+}
+/* ADJUSTED: Slides up to be relatively centered */
+.container .card:hover .content {
+    transform: translateY(-20px); 
+    opacity: 1; 
+}
+
+/* SPECIALTY (Large background text) */
+.container .card .content h2 {
+    position: absolute;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 4em; 
+    color: rgba(0, 51, 102, 0.1); 
+    pointer-events: none; 
+    white-space: nowrap;
+    text-transform: uppercase;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+/* DOCTOR BIO/DESCRIPTION (Detailed Treats info) */
+.container .card .content p {
+    font-size: 1em;
+    color: #343a40; 
+    font-weight: 400;
+    margin-top: 50px; 
+    margin-bottom: 15px;
+}
+/* BOOK APPOINTMENT BUTTON */
+.container .card .content a {
+    position: relative;
+    display: inline-block;
+    padding: 10px 25px;
+    background: #0050b3; /* Primary Blue */
+    color: #fff;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s;
+}
+
+.container .card .content a:hover {
+    background: #007bff; /* Brighter Blue hover color */
+}
+
+/* Media Query for smaller screens (Stacks the filter and search bar) */
+@media (max-width: 900px) {
+    .search-and-filter-area {
+        flex-direction: column;
+        gap: 20px;
+    }
+    .filter-sidebar {
+        width: 100%;
+    }
+    .filter-sidebar .checkbox-group {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 10px 20px;
+    }
+    .filter-sidebar label {
+        width: 45%;
+    }
+}
