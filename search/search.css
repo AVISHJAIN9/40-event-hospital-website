@@ -1,0 +1,164 @@
+/* GLOBAL RESET & FONT */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* BODY - FOR GLASSMORPHISM EFFECT */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #161623; /* Dark background */
+}
+/* Background elements for visual interest */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(#2196f3, #e91e63);
+    clip-path: circle(20% at 10% 10%); /* Blue/Pink gradient effect */
+}
+
+/* MAIN CONTAINER */
+.container {
+    position: relative;
+    max-width: 1200px;
+    padding: 0 20px;
+    z-index: 1; /* Keep content above background pseudo-elements */
+}
+
+/* SEARCH BAR STYLES */
+.container .search {
+    display: flex;
+    padding: 30px 0px;
+    justify-content: space-between;
+    align-items: center; /* Vertically center items */
+}
+.container .search h1 {
+    letter-spacing: 3px;
+    display: inline-block;
+    border-bottom: 2px solid green;
+    padding-bottom: 10px;
+    color: #fff; /* White text for contrast on dark background */
+}
+.container .search input {
+    width: 60%;
+    padding: 10px 16px; /* Increased padding for better look */
+    background: transparent;
+    border: 1px solid #fff; /* White border */
+    color: #fff; /* White text color */
+    font-size: 16px;
+    text-transform: capitalize;
+    letter-spacing: 2px;
+    border-radius: 5px;
+}
+.container .search input::placeholder {
+    color: green;
+    font-weight: 500;
+}
+
+/* PRODUCT LISTS (for visual grouping, though only one card exists) */
+.products-lists {
+    display: flex;
+    justify-content: center; /* Center the card(s) below the search bar */
+    flex-wrap: wrap;
+    gap: 30px; /* Space between cards */
+}
+
+/* CARD - BASE STYLES (Glassmorphism) */
+.container .card {
+    position: relative;
+    width: 280px; /* Increased width slightly */
+    height: 400px;
+    margin: 30px;
+    box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.5);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.1); /* Transparent White */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
+    border-left: 1px solid rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(5px);
+    transition: 0.5s; /* Add transition for general card interaction */
+}
+
+/* IMAGE BOX - Positioned above content */
+.container .card .img-box {
+    position: absolute;
+    top: 50px; /* Adjusted position */
+    width: 200px;
+    height: 200px;
+    transition: 0.5s;
+    opacity: 1;
+    transform: translateY(0);
+}
+.container .card .img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+/* IMAGE BOX HOVER EFFECT - Slide UP and fade OUT */
+.container .card:hover .img-box {
+    transform: translateY(-80px); /* Slides up */
+    opacity: 0; /* Fades out */
+}
+
+/* CONTENT BOX - Positioned relative to the card */
+.container .card .content {
+    padding: 20px;
+    text-align: center;
+    /* Start the content further down, off-screen */
+    transform: translateY(150px);
+    opacity: 0;
+    transition: 0.5s;
+    position: relative; /* Essential for containing the h2 and other content */
+}
+
+/* CONTENT HOVER EFFECT - Slide IN and fade IN */
+.container .card:hover .content {
+    transform: translateY(20px); /* Slides to a visible position */
+    opacity: 1; /* Fades in */
+}
+
+/* GLASSMORPHISM CONTENT STYLES */
+.container .card .content h2 {
+    position: absolute;
+    top: -40px;
+    right: 30px;
+    font-size: 8em;
+    color: rgba(255, 255, 255, 0.5);
+    pointer-events: none; /* Allows clicks to pass through */
+}
+.container .card .content h3 {
+    font-size: 1.8rem;
+    color: #fff;
+    z-index: 1;
+}
+.container .card .content p {
+    font-size: 1em;
+    color: #fff;
+    font-weight: 300;
+}
+.container .card .content a {
+    position: relative;
+    display: inline-block;
+    padding: 8px 20px;
+    margin-top: 15px;
+    background: #fff;
+    color: #000;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 500;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}

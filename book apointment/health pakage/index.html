@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Packages & Cart</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <div class="image-container">
+        <img src="cheakup.jpeg" alt="Health Checkup Image">
+        <div class="image-text">
+            <h1>Health Checkup & Lab</h1>
+            <h3>Comprehensive screenings for early detection and better well-being.</h3>
+        </div>
+    </div>
+
+    <div class="main-content-container">
+        
+        <div class="search-container">
+            <input 
+                type="text" 
+                id="searchInput" 
+                onkeyup="filterProducts(this.value)" 
+                placeholder="Search for packages or tests..."
+            >
+        </div>
+
+        <div id="products" class="product-grid">
+            </div>
+
+        <div class="cart-summary">
+            <h2>🛒 Your Cart</h2>
+            <p>Total Items: <span id="cartCount">0</span></p>
+            <p>Total Cost: <span id="cartTotal">$0.00</span></p>
+            <button onclick="checkout()">Proceed to Checkout</button>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
